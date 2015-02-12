@@ -15,7 +15,7 @@ class Network(object):
                    'config': "{'func': '16+((data > 180)*219)'}",
                    'pos': (200.0, 200.0)},
     'clipper2': {   'class': 'pyctools.components.arithmetic.Arithmetic',
-                    'config': "{'func': '16+((data > 180)*219)'}",
+                    'config': "{'func': '16+((data > 230)*219)'}",
                     'pos': (200.0, 350.0)},
     'qd': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
               'config': "{'repeat': 'on', 'framerate': 60, 'sync': 'on'}",
@@ -27,7 +27,7 @@ class Network(object):
                'config': "{'zlen': 1000, 'looping': 'repeat', 'xlen': 600, 'kt': -0.34, 'ylen': 400, 'kx': 0.04}",
                'pos': (50.0, 200.0)},
     'zpg2': {   'class': 'pyctools.components.zone.zoneplategenerator.ZonePlateGenerator',
-                'config': "{'zlen': 1000, 'looping': 'repeat', 'xlen': 600, 'kt': -0.034, 'ylen': 200, 'kx': 0.004}",
+                'config': "{'zlen': 1000, 'looping': 'repeat', 'xlen': 600, 'kt': -0.017, 'ylen': 200, 'kx': 0.002}",
                 'pos': (50.0, 350.0)}}
         self.linkages = \
 {   ('clipper', 'output'): ('stacker', 'input1'),
