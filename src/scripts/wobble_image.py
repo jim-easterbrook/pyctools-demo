@@ -17,7 +17,7 @@ import pyctools.components.framerepeat
 class Network(object):
     components = \
 {   'd': {   'class': 'pyctools.components.demo.displace.Displace',
-             'config': "{'zlen': 100, 'yamp': 250.0, 'xamp': 250.0}",
+             'config': "{'zlen': 100, 'yamp': 60.0, 'xamp': 60.0}",
              'pos': (650.0, 100.0)},
     'dm': {   'class': 'pyctools.components.io.dumpmetadata.DumpMetadata',
               'config': '{}',
