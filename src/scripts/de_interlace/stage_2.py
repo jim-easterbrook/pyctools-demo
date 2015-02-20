@@ -4,9 +4,9 @@
 import argparse
 import logging
 from pyctools.core.compound import Compound
+import pyctools.components.io.videofilereader
 import pyctools.components.deinterlace.simple
 import pyctools.components.qt.qtdisplay
-import pyctools.components.zone.zoneplategenerator
 import pyctools.components.plumbing.busbar
 import pyctools.components.deinterlace.hhiprefilter
 
@@ -16,10 +16,10 @@ class Network(object):
              'config': '{}',
              'pos': (150.0, 200.0)},
     'deinterlace': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
-                       'config': "{'topfirst': 'on', 'mode': 'repeatline'}",
+                       'config': "{'mode': 'repeatline', 'topfirst': 'on'}",
                        'pos': (550.0, 150.0)},
     'deinterlace2': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
-                        'config': "{'topfirst': 'on', 'mode': 'repeatline'}",
+                        'config': "{'mode': 'repeatline', 'topfirst': 'on'}",
                         'pos': (550.0, 300.0)},
     'display': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
                    'config': "{'repeat': 'on', 'framerate': 20, 'sync': 'on', 'title': 'Interlaced, filtered'}",
@@ -39,9 +39,9 @@ class Network(object):
     'qd': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
               'config': "{'repeat': 'on', 'framerate': 20, 'sync': 'on', 'title': 'Original'}",
               'pos': (250.0, 450.0)},
-    'zpg': {   'class': 'pyctools.components.zone.zoneplategenerator.ZonePlateGenerator',
-               'config': "{'looping': 'repeat', 'kxy': 1.0, 'kt': 0.02, 'ylen': 400, 'kx': 0.5, 'xlen': 400}",
-               'pos': (0.0, 200.0)}}
+    'vfr': {   'class': 'pyctools.components.io.videofilereader.VideoFileReader',
+               'config': "{'path': '/home/jim/Documents/projects/pyctools-demo/video/still_wobble.avi', 'looping': 'repeat'}",
+               'pos': (0.0, 250.0)}}
     linkages = \
 {   ('b', 'output0'): ('hhipf', 'input'),
     ('b', 'output1'): ('interlace2', 'input'),
@@ -51,7 +51,7 @@ class Network(object):
     ('hhipf', 'output'): ('interlace', 'input'),
     ('interlace', 'output'): ('deinterlace', 'input'),
     ('interlace2', 'output'): ('deinterlace2', 'input'),
-    ('zpg', 'output'): ('b', 'input')}
+    ('vfr', 'output'): ('b', 'input')}
 
     def make(self):
         comps = {}
