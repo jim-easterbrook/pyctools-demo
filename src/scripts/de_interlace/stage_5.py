@@ -5,53 +5,51 @@ import argparse
 import logging
 from pyctools.core.compound import Compound
 import pyctools.components.io.videofilereader
-import pyctools.components.deinterlace.simple
 import pyctools.components.qt.qtdisplay
+import pyctools.components.deinterlace.simple
 import pyctools.components.plumbing.busbar
 import pyctools.components.deinterlace.hhiprefilter
+import pyctools.components.deinterlace.intrafield
+import pyctools.components.deinterlace.weston3field
 
 class Network(object):
     components = \
-{   'b': {   'class': 'pyctools.components.plumbing.busbar.Busbar',
+{   'Weston': {   'class': 'pyctools.components.deinterlace.weston3field.Weston3Field',
+                  'config': "{'mode': 1, 'topfirst': 'on'}",
+                  'pos': (650.0, 300.0)},
+    'b': {   'class': 'pyctools.components.plumbing.busbar.Busbar',
              'config': '{}',
-             'pos': (150.0, 200.0)},
-    'deinterlace': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
-                       'config': "{'topfirst': 'on', 'mode': 'repeatline'}",
-                       'pos': (550.0, 150.0)},
-    'deinterlace2': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
-                        'config': "{'topfirst': 'on', 'mode': 'repeatline'}",
-                        'pos': (550.0, 300.0)},
+             'pos': (550.0, 200.0)},
     'display': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
-                   'config': "{'repeat': 'on', 'framerate': 20, 'sync': 'on', 'title': 'Interlaced, filtered'}",
-                   'pos': (700.0, 150.0)},
+                   'config': "{'repeat': 'on', 'framerate': 60, 'sync': 'on', 'title': 'intra-field'}",
+                   'pos': (800.0, 150.0)},
     'display2': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
-                    'config': "{'repeat': 'on', 'framerate': 20, 'sync': 'on', 'title': 'Interlaced, unfiltered'}",
-                    'pos': (700.0, 300.0)},
+                    'config': "{'repeat': 'on', 'framerate': 60, 'sync': 'on', 'title': 'Weston'}",
+                    'pos': (800.0, 300.0)},
     'hhipf': {   'class': 'pyctools.components.deinterlace.hhiprefilter.HHIPreFilter',
                  'config': '{}',
-                 'pos': (250.0, 150.0)},
+                 'pos': (250.0, 200.0)},
     'interlace': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
                      'config': "{'inverse': 'on', 'topfirst': 'on'}",
-                     'pos': (400.0, 150.0)},
-    'interlace2': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
-                      'config': "{'inverse': 'on', 'topfirst': 'on'}",
-                      'pos': (400.0, 300.0)},
+                     'pos': (400.0, 200.0)},
+    'intra-field': {   'class': 'pyctools.components.deinterlace.intrafield.IntraField',
+                       'config': '{}',
+                       'pos': (650.0, 150.0)},
     'qd': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
-              'config': "{'repeat': 'on', 'framerate': 20, 'sync': 'on', 'title': 'Original'}",
-              'pos': (250.0, 450.0)},
+              'config': "{'repeat': 'on', 'framerate': 60, 'sync': 'on', 'title': 'Original'}",
+              'pos': (100.0, 200.0)},
     'vfr': {   'class': 'pyctools.components.io.videofilereader.VideoFileReader',
                'config': "{'path': '/home/jim/Documents/projects/pyctools-demo/video/still_wobble.avi', 'looping': 'repeat'}",
-               'pos': (0.0, 200.0)}}
+               'pos': (-50.0, 200.0)}}
     linkages = \
-{   ('b', 'output0'): ('hhipf', 'input'),
-    ('b', 'output1'): ('interlace2', 'input'),
-    ('b', 'output2'): ('qd', 'input'),
-    ('deinterlace', 'output'): ('display', 'input'),
-    ('deinterlace2', 'output'): ('display2', 'input'),
+{   ('Weston', 'output'): ('display2', 'input'),
+    ('b', 'output0'): ('intra-field', 'input'),
+    ('b', 'output1'): ('Weston', 'input'),
     ('hhipf', 'output'): ('interlace', 'input'),
-    ('interlace', 'output'): ('deinterlace', 'input'),
-    ('interlace2', 'output'): ('deinterlace2', 'input'),
-    ('vfr', 'output'): ('b', 'input')}
+    ('interlace', 'output'): ('b', 'input'),
+    ('intra-field', 'output'): ('display', 'input'),
+    ('qd', 'output'): ('hhipf', 'input'),
+    ('vfr', 'output'): ('qd', 'input')}
 
     def make(self):
         comps = {}
