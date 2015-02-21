@@ -7,15 +7,11 @@ from pyctools.core.compound import Compound
 import pyctools.components.io.videofilereader
 import pyctools.components.deinterlace.simple
 import pyctools.components.qt.qtdisplay
-import pyctools.components.plumbing.busbar
 import pyctools.components.deinterlace.hhiprefilter
 
 class Network(object):
     components = \
-{   'b': {   'class': 'pyctools.components.plumbing.busbar.Busbar',
-             'config': '{}',
-             'pos': (150.0, 200.0)},
-    'deinterlace': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
+{   'deinterlace': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
                        'config': "{'topfirst': 'on', 'mode': 'repeatline'}",
                        'pos': (550.0, 150.0)},
     'deinterlace2': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
@@ -41,17 +37,19 @@ class Network(object):
               'pos': (250.0, 450.0)},
     'vfr': {   'class': 'pyctools.components.io.videofilereader.VideoFileReader',
                'config': "{'path': '/home/jim/Documents/projects/pyctools-demo/video/still_wobble.avi', 'looping': 'repeat'}",
-               'pos': (0.0, 200.0)}}
+               'pos': (50.0, 200.0)}}
     linkages = \
-{   ('b', 'output0'): ('hhipf', 'input'),
-    ('b', 'output1'): ('interlace2', 'input'),
-    ('b', 'output2'): ('qd', 'input'),
-    ('deinterlace', 'output'): ('display', 'input'),
-    ('deinterlace2', 'output'): ('display2', 'input'),
-    ('hhipf', 'output'): ('interlace', 'input'),
-    ('interlace', 'output'): ('deinterlace', 'input'),
-    ('interlace2', 'output'): ('deinterlace2', 'input'),
-    ('vfr', 'output'): ('b', 'input')}
+{   ('deinterlace', 'output'): ['display', 'input'],
+    ('deinterlace2', 'output'): ['display2', 'input'],
+    ('hhipf', 'output'): ['interlace', 'input'],
+    ('interlace', 'output'): ['deinterlace', 'input'],
+    ('interlace2', 'output'): ['deinterlace2', 'input'],
+    ('vfr', 'output'): [   'qd',
+                           'input',
+                           'interlace2',
+                           'input',
+                           'hhipf',
+                           'input']}
 
     def make(self):
         comps = {}

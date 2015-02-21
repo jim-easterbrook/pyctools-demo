@@ -7,19 +7,15 @@ from pyctools.core.compound import Compound
 import pyctools.components.deinterlace.simple
 import pyctools.components.qt.qtdisplay
 import pyctools.components.zone.zoneplategenerator
-import pyctools.components.plumbing.busbar
 import pyctools.components.deinterlace.hhiprefilter
 
 class Network(object):
     components = \
-{   'b': {   'class': 'pyctools.components.plumbing.busbar.Busbar',
-             'config': '{}',
-             'pos': (150.0, 200.0)},
-    'deinterlace': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
-                       'config': "{'topfirst': 'on', 'mode': 'repeatline'}",
+{   'deinterlace': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
+                       'config': "{'mode': 'repeatline', 'topfirst': 'on'}",
                        'pos': (550.0, 150.0)},
     'deinterlace2': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
-                        'config': "{'topfirst': 'on', 'mode': 'repeatline'}",
+                        'config': "{'mode': 'repeatline', 'topfirst': 'on'}",
                         'pos': (550.0, 300.0)},
     'display': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
                    'config': "{'repeat': 'on', 'framerate': 20, 'sync': 'on', 'title': 'Interlaced, filtered'}",
@@ -41,17 +37,19 @@ class Network(object):
               'pos': (250.0, 450.0)},
     'zpg': {   'class': 'pyctools.components.zone.zoneplategenerator.ZonePlateGenerator',
                'config': "{'looping': 'repeat', 'kxy': 1.0, 'kt': 0.02, 'ylen': 400, 'kx': 0.5, 'xlen': 400}",
-               'pos': (0.0, 200.0)}}
+               'pos': (50.0, 200.0)}}
     linkages = \
-{   ('b', 'output0'): ('hhipf', 'input'),
-    ('b', 'output1'): ('interlace2', 'input'),
-    ('b', 'output2'): ('qd', 'input'),
-    ('deinterlace', 'output'): ('display', 'input'),
-    ('deinterlace2', 'output'): ('display2', 'input'),
-    ('hhipf', 'output'): ('interlace', 'input'),
-    ('interlace', 'output'): ('deinterlace', 'input'),
-    ('interlace2', 'output'): ('deinterlace2', 'input'),
-    ('zpg', 'output'): ('b', 'input')}
+{   ('deinterlace', 'output'): ['display', 'input'],
+    ('deinterlace2', 'output'): ['display2', 'input'],
+    ('hhipf', 'output'): ['interlace', 'input'],
+    ('interlace', 'output'): ['deinterlace', 'input'],
+    ('interlace2', 'output'): ['deinterlace2', 'input'],
+    ('zpg', 'output'): [   'qd',
+                           'input',
+                           'interlace2',
+                           'input',
+                           'hhipf',
+                           'input']}
 
     def make(self):
         comps = {}

@@ -4,24 +4,20 @@
 import argparse
 import logging
 from pyctools.core.compound import Compound
-import pyctools.components.deinterlace.intrafield
-import pyctools.components.plumbing.busbar
-import pyctools.components.io.videofilereader
 import pyctools.components.qt.qtdisplay
 import pyctools.components.deinterlace.simple
+import pyctools.components.io.videofilereader
 import pyctools.components.deinterlace.hhiprefilter
+import pyctools.components.deinterlace.intrafield
 
 class Network(object):
     components = \
-{   'b': {   'class': 'pyctools.components.plumbing.busbar.Busbar',
-             'config': '{}',
-             'pos': (550.0, 200.0)},
-    'display': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
+{   'display': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
                    'config': "{'repeat': 'on', 'framerate': 20, 'sync': 'on', 'title': 'line repeat'}",
-                   'pos': (800.0, 150.0)},
+                   'pos': (700.0, 150.0)},
     'display2': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
                     'config': "{'repeat': 'on', 'framerate': 20, 'sync': 'on', 'title': 'intra-field'}",
-                    'pos': (800.0, 300.0)},
+                    'pos': (700.0, 300.0)},
     'hhipf': {   'class': 'pyctools.components.deinterlace.hhiprefilter.HHIPreFilter',
                  'config': '{}',
                  'pos': (250.0, 200.0)},
@@ -30,25 +26,22 @@ class Network(object):
                      'pos': (400.0, 200.0)},
     'intra-field': {   'class': 'pyctools.components.deinterlace.intrafield.IntraField',
                        'config': '{}',
-                       'pos': (650.0, 300.0)},
+                       'pos': (550.0, 300.0)},
     'line-repeat': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
                        'config': "{'mode': 'repeatline', 'topfirst': 'on'}",
-                       'pos': (650.0, 150.0)},
+                       'pos': (550.0, 150.0)},
     'qd': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
               'config': "{'repeat': 'on', 'framerate': 20, 'sync': 'on', 'title': 'Original'}",
-              'pos': (100.0, 200.0)},
+              'pos': (250.0, 350.0)},
     'vfr': {   'class': 'pyctools.components.io.videofilereader.VideoFileReader',
                'config': "{'path': '/home/jim/Documents/projects/pyctools-demo/video/still_wobble.avi', 'looping': 'repeat'}",
-               'pos': (-50.0, 200.0)}}
+               'pos': (100.0, 200.0)}}
     linkages = \
-{   ('b', 'output0'): ('line-repeat', 'input'),
-    ('b', 'output1'): ('intra-field', 'input'),
-    ('hhipf', 'output'): ('interlace', 'input'),
-    ('interlace', 'output'): ('b', 'input'),
-    ('intra-field', 'output'): ('display2', 'input'),
-    ('line-repeat', 'output'): ('display', 'input'),
-    ('qd', 'output'): ('hhipf', 'input'),
-    ('vfr', 'output'): ('qd', 'input')}
+{   ('hhipf', 'output'): ['interlace', 'input'],
+    ('interlace', 'output'): ['line-repeat', 'input', 'intra-field', 'input'],
+    ('intra-field', 'output'): ['display2', 'input'],
+    ('line-repeat', 'output'): ['display', 'input'],
+    ('vfr', 'output'): ['qd', 'input', 'hhipf', 'input']}
 
     def make(self):
         comps = {}
