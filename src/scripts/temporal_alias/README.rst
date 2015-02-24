@@ -9,14 +9,17 @@ It's also a good test of your computer's "tear free" (or similar) settings and h
 Stage 1
 -------
 
-This shows a set of vertical bars moving from left to right.
+This shows a set of vertical bars moving horizontally.
 (Opening the zone plate generator config will show the actual frequencies.)
 The pattern may just look like some flickering bars at first, but if you let your eye track from left to right you may see the motion.
+Pausing the display shows the vertical bars more clearly.
+They could be part of a picket fence or some other object with a similar repeating structure.
 
 Stage 2
 -------
 
 Adding lower spatial frequency bars moving from left to right makes the motion a lot more apparent.
+This might be fence posts in a real scene.
 
 Stage 3
 -------
