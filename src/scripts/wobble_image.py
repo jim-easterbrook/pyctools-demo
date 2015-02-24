@@ -53,17 +53,17 @@ class Network(object):
                'config': "{'path': '/home/jim/Documents/projects/pyctools-demo/video/still_wobble.avi'}",
                'pos': (1250.0, 100.0)}}
     linkages = \
-{   ('d', 'output'): ('ifft', 'input'),
-    ('fft', 'output'): ('fr', 'input'),
-    ('fg', 'output'): ('r', 'filter'),
-    ('fg0', 'output'): ('r0', 'filter'),
-    ('fr', 'output'): ('d', 'input'),
-    ('ifft', 'output'): ('r', 'input'),
-    ('ifr', 'output'): ('fft', 'input'),
-    ('qd', 'output'): ('dm', 'input'),
-    ('r', 'output'): ('r0', 'input'),
-    ('r0', 'output'): ('vfw', 'input'),
-    ('vfw', 'output'): ('qd', 'input')}
+{   ('d', 'output'): [('ifft', 'input')],
+    ('fft', 'output'): [('fr', 'input')],
+    ('fg', 'output'): [('r', 'filter')],
+    ('fg0', 'output'): [('r0', 'filter')],
+    ('fr', 'output'): [('d', 'input')],
+    ('ifft', 'output'): [('r', 'input')],
+    ('ifr', 'output'): [('fft', 'input')],
+    ('qd', 'output'): [('dm', 'input')],
+    ('r', 'output'): [('r0', 'input')],
+    ('r0', 'output'): [('vfw', 'input')],
+    ('vfw', 'output'): [('qd', 'input')]}
 
     def make(self):
         comps = {}

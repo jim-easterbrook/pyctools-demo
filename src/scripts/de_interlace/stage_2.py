@@ -37,19 +37,16 @@ class Network(object):
               'pos': (250.0, 450.0)},
     'vfr': {   'class': 'pyctools.components.io.videofilereader.VideoFileReader',
                'config': "{'path': '/home/jim/Documents/projects/pyctools-demo/video/still_wobble.avi', 'looping': 'repeat'}",
-               'pos': (50.0, 200.0)}}
+               'pos': (50.0, 300.0)}}
     linkages = \
-{   ('deinterlace', 'output'): ['display', 'input'],
-    ('deinterlace2', 'output'): ['display2', 'input'],
-    ('hhipf', 'output'): ['interlace', 'input'],
-    ('interlace', 'output'): ['deinterlace', 'input'],
-    ('interlace2', 'output'): ['deinterlace2', 'input'],
-    ('vfr', 'output'): [   'qd',
-                           'input',
-                           'interlace2',
-                           'input',
-                           'hhipf',
-                           'input']}
+{   ('deinterlace', 'output'): [('display', 'input')],
+    ('deinterlace2', 'output'): [('display2', 'input')],
+    ('hhipf', 'output'): [('interlace', 'input')],
+    ('interlace', 'output'): [('deinterlace', 'input')],
+    ('interlace2', 'output'): [('deinterlace2', 'input')],
+    ('vfr', 'output'): [   ('qd', 'input'),
+                           ('interlace2', 'input'),
+                           ('hhipf', 'input')]}
 
     def make(self):
         comps = {}

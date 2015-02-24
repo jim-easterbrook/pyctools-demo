@@ -38,11 +38,11 @@ class Network(object):
                'config': "{'path': '/home/jim/Documents/projects/pyctools-demo/video/still_wobble.avi', 'looping': 'repeat'}",
                'pos': (200.0, 200.0)}}
     linkages = \
-{   ('Weston', 'output'): ['display2', 'input'],
-    ('hhipf', 'output'): ['interlace', 'input'],
-    ('interlace', 'output'): ['intra-field', 'input', 'Weston', 'input'],
-    ('intra-field', 'output'): ['display', 'input'],
-    ('vfr', 'output'): ['hhipf', 'input', 'qd', 'input']}
+{   ('Weston', 'output'): [('display2', 'input')],
+    ('hhipf', 'output'): [('interlace', 'input')],
+    ('interlace', 'output'): [('Weston', 'input'), ('intra-field', 'input')],
+    ('intra-field', 'output'): [('display', 'input')],
+    ('vfr', 'output'): [('qd', 'input'), ('hhipf', 'input')]}
 
     def make(self):
         comps = {}

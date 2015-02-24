@@ -9,8 +9,7 @@ import pyctools.components.zone.zoneplategenerator
 import pyctools.components.qt.qtdisplay
 
 class Network(object):
-    def __init__(self):
-        self.components = \
+    components = \
 {   'clipper': {   'class': 'pyctools.components.arithmetic.Arithmetic',
                    'config': "{'func': '16+((data > 180)*219)'}",
                    'pos': (200.0, 200.0)},
@@ -38,24 +37,20 @@ class Network(object):
     'zpg3': {   'class': 'pyctools.components.zone.zoneplategenerator.ZonePlateGenerator',
                 'config': "{'zlen': 1000, 'looping': 'repeat', 'xlen': 600, 'kt': -0.033, 'ylen': 200, 'kx': -0.002}",
                 'pos': (50.0, 50.0)}}
-        self.linkages = \
-{   ('clipper', 'output'): ('stacker', 'input1'),
-    ('clipper2', 'output'): ('stacker', 'input2'),
-    ('clipper3', 'output'): ('stacker2', 'input1'),
-    ('stacker', 'output'): ('stacker2', 'input2'),
-    ('stacker2', 'output'): ('qd', 'input'),
-    ('zpg', 'output'): ('clipper', 'input'),
-    ('zpg2', 'output'): ('clipper2', 'input'),
-    ('zpg3', 'output'): ('clipper3', 'input')}
+    linkages = \
+{   ('clipper', 'output'): [('stacker', 'input1')],
+    ('clipper2', 'output'): [('stacker', 'input2')],
+    ('clipper3', 'output'): [('stacker2', 'input1')],
+    ('stacker', 'output'): [('stacker2', 'input2')],
+    ('stacker2', 'output'): [('qd', 'input')],
+    ('zpg', 'output'): [('clipper', 'input')],
+    ('zpg2', 'output'): [('clipper2', 'input')],
+    ('zpg3', 'output'): [('clipper3', 'input')]}
 
     def make(self):
         comps = {}
         for name, component in self.components.items():
-            comps[name] = eval(component['class'])()
-            cnf = comps[name].get_config()
-            for key, value in eval(component['config']).items():
-                cnf[key] = value
-            comps[name].set_config(cnf)
+            comps[name] = eval(component['class'])(**eval(component['config']))
         return Compound(linkages=self.linkages, **comps)
 
 if __name__ == '__main__':

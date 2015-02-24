@@ -28,7 +28,7 @@ class Network(object):
                        'config': '{}',
                        'pos': (550.0, 300.0)},
     'line-repeat': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
-                       'config': "{'mode': 'repeatline', 'topfirst': 'on'}",
+                       'config': "{'topfirst': 'on', 'mode': 'repeatline'}",
                        'pos': (550.0, 150.0)},
     'qd': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
               'config': "{'repeat': 'on', 'framerate': 20, 'sync': 'on', 'title': 'Original'}",
@@ -37,11 +37,12 @@ class Network(object):
                'config': "{'path': '/home/jim/Documents/projects/pyctools-demo/video/still_wobble.avi', 'looping': 'repeat'}",
                'pos': (100.0, 200.0)}}
     linkages = \
-{   ('hhipf', 'output'): ['interlace', 'input'],
-    ('interlace', 'output'): ['line-repeat', 'input', 'intra-field', 'input'],
-    ('intra-field', 'output'): ['display2', 'input'],
-    ('line-repeat', 'output'): ['display', 'input'],
-    ('vfr', 'output'): ['qd', 'input', 'hhipf', 'input']}
+{   ('hhipf', 'output'): [('interlace', 'input')],
+    ('interlace', 'output'): [   ('intra-field', 'input'),
+                                 ('line-repeat', 'input')],
+    ('intra-field', 'output'): [('display2', 'input')],
+    ('line-repeat', 'output'): [('display', 'input')],
+    ('vfr', 'output'): [('hhipf', 'input'), ('qd', 'input')]}
 
     def make(self):
         comps = {}
