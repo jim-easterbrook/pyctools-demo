@@ -36,7 +36,7 @@ class Network(object):
               'config': "{'repeat': 'on', 'framerate': 20, 'sync': 'on', 'title': 'Original'}",
               'pos': (250.0, 450.0)},
     'vfr': {   'class': 'pyctools.components.io.videofilereader.VideoFileReader',
-               'config': "{'path': '/home/jim/Documents/projects/pyctools-demo/video/still_wobble.avi', 'looping': 'repeat'}",
+               'config': "{'path': 'video/still_wobble.avi', 'looping': 'repeat'}",
                'pos': (50.0, 300.0)}}
     linkages = \
 {   ('deinterlace', 'output'): [('display', 'input')],

@@ -38,7 +38,7 @@ class Network(object):
                 'config': "{'output': 'real', 'inverse': 'on'}",
                 'pos': (800.0, 100.0)},
     'ifr': {   'class': 'pyctools.components.io.imagefilereader.ImageFileReader',
-               'config': "{'path': '/home/jim/Documents/projects/pyctools-demo/video/still.jpg'}",
+               'config': "{'path': 'video/still.jpg'}",
                'pos': (200.0, 100.0)},
     'qd': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
               'config': "{'repeat': 'on', 'sync': 'on'}",
@@ -50,7 +50,7 @@ class Network(object):
               'config': "{'ydown': 6}",
               'pos': (1100.0, 100.0)},
     'vfw': {   'class': 'pyctools.components.io.videofilewriter.VideoFileWriter',
-               'config': "{'path': '/home/jim/Documents/projects/pyctools-demo/video/still_wobble.avi'}",
+               'config': "{'path': 'video/still_wobble.avi'}",
                'pos': (1250.0, 100.0)}}
     linkages = \
 {   ('d', 'output'): [('ifft', 'input')],

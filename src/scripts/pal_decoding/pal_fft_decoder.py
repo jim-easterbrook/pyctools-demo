@@ -33,7 +33,7 @@ class Network(object):
                'config': "{'ytile': 16, 'xtile': 32}",
                'pos': (800.0, 0.0)},
     'filereader': {   'class': 'pyctools.components.io.videofilereader.VideoFileReader',
-                      'config': "{'path': '/home/jim/Documents/projects/pyctools-demo/video/coded_pal.avi', '16bit': 'on', 'type': 'Y', 'looping': 'repeat'}",
+                      'config': "{'path': 'video/coded_pal.avi', '16bit': 'on', 'type': 'Y', 'looping': 'repeat'}",
                       'pos': (50.0, -150.0)},
     'filterUV': {   'class': 'pyctools.components.pal.transform.FTFilterUV',
                     'config': "{'ytile': 16, 'xtile': 32, 'mode': 'thresh', 'threshold': 0.8}",

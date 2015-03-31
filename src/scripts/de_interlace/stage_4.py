@@ -35,7 +35,7 @@ class Network(object):
               'config': "{'repeat': 'on', 'framerate': 20, 'sync': 'on', 'title': 'Original'}",
               'pos': (350.0, 350.0)},
     'vfr': {   'class': 'pyctools.components.io.videofilereader.VideoFileReader',
-               'config': "{'path': '/home/jim/Documents/projects/pyctools-demo/video/still_wobble.avi', 'looping': 'repeat'}",
+               'config': "{'path': 'video/still_wobble.avi', 'looping': 'repeat'}",
                'pos': (200.0, 200.0)}}
     linkages = \
 {   ('Weston', 'output'): [('display2', 'input')],

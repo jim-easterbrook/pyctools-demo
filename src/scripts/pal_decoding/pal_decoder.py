@@ -20,7 +20,7 @@ class Network(object):
                    'config': "{'repeat': 'on', 'sync': 'on'}",
                    'pos': (1100.0, 350.0)},
     'filereader': {   'class': 'pyctools.components.io.videofilereader.VideoFileReader',
-                      'config': "{'path': '/home/jim/Documents/projects/pyctools-demo/video/coded_pal.avi', '16bit': 'on', 'type': 'Y', 'looping': 'repeat'}",
+                      'config': "{'path': 'video/coded_pal.avi', '16bit': 'on', 'type': 'Y', 'looping': 'repeat'}",
                       'pos': (50.0, 350.0)},
     'filterUV': {   'class': 'pyctools.components.pal.decoder.PostFilterUV',
                     'config': '{}',
