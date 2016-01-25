@@ -26,14 +26,13 @@ class Network(object):
     def make(self):
         comps = {}
         for name, component in self.components.items():
-            comps[name] = eval(component['class'])(**eval(component['config']))
+            comps[name] = eval(component['class'])(config=eval(component['config']))
         return Compound(linkages=self.linkages, **comps)
 
 if __name__ == '__main__':
-    from PyQt4 import QtGui
-    from PyQt4.QtCore import Qt
-    QtGui.QApplication.setAttribute(Qt.AA_X11InitThreads)
-    app = QtGui.QApplication([])
+    from pyctools.core.qt import Qt, QtWidgets
+    QtWidgets.QApplication.setAttribute(Qt.AA_X11InitThreads)
+    app = QtWidgets.QApplication([])
 
     comp = Network().make()
     cnf = comp.get_config()

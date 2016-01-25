@@ -6,10 +6,10 @@ import logging
 from pyctools.core.compound import Compound
 import pyctools.components.pal.coder
 import pyctools.components.qt.qtdisplay
-import pyctools.components.io.videofilewriter
 import pyctools.components.arithmetic
 import pyctools.components.io.videofilereader
 import pyctools.components.pal.common
+import pyctools.components.io.videofilewriter
 import pyctools.components.adder
 import pyctools.components.colourspace.rgbtoyuv
 
@@ -54,7 +54,7 @@ class Network(object):
     ('resample', 'output'): [('rgbyuv', 'input')],
     ('rgbyuv', 'output_UV'): [('prefilter', 'input')],
     ('rgbyuv', 'output_Y'): [('adder', 'input0')],
-    ('setlevel', 'output'): [('display', 'input'), ('filewriter', 'input')]}
+    ('setlevel', 'output'): [('filewriter', 'input'), ('display', 'input')]}
 
     def make(self):
         comps = {}
@@ -63,10 +63,9 @@ class Network(object):
         return Compound(linkages=self.linkages, **comps)
 
 if __name__ == '__main__':
-    from PyQt4 import QtGui
-    from PyQt4.QtCore import Qt
-    QtGui.QApplication.setAttribute(Qt.AA_X11InitThreads)
-    app = QtGui.QApplication([])
+    from pyctools.core.qt import Qt, QtWidgets
+    QtWidgets.QApplication.setAttribute(Qt.AA_X11InitThreads)
+    app = QtWidgets.QApplication([])
 
     comp = Network().make()
     cnf = comp.get_config()

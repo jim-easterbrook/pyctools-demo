@@ -4,12 +4,12 @@
 import argparse
 import logging
 from pyctools.core.compound import Compound
+import pyctools.components.qt.qtdisplay
 import pyctools.components.pal.decoder
+import pyctools.components.arithmetic
+import pyctools.components.io.videofilereader
 import pyctools.components.pal.common
 import pyctools.components.colourspace.yuvtorgb
-import pyctools.components.arithmetic
-import pyctools.components.qt.qtdisplay
-import pyctools.components.io.videofilereader
 
 class Network(object):
     components = \
@@ -47,7 +47,7 @@ class Network(object):
     ('filterY', 'output'): [('yuvrgb', 'input_Y')],
     ('matrix', 'output'): [('demod', 'input')],
     ('resample', 'output'): [('display', 'input')],
-    ('setlevel', 'output'): [('matrix', 'input'), ('filterY', 'input')],
+    ('setlevel', 'output'): [('filterY', 'input'), ('matrix', 'input')],
     ('yuvrgb', 'output'): [('resample', 'input')]}
 
     def make(self):
@@ -57,10 +57,9 @@ class Network(object):
         return Compound(linkages=self.linkages, **comps)
 
 if __name__ == '__main__':
-    from PyQt4 import QtGui
-    from PyQt4.QtCore import Qt
-    QtGui.QApplication.setAttribute(Qt.AA_X11InitThreads)
-    app = QtGui.QApplication([])
+    from pyctools.core.qt import Qt, QtWidgets
+    QtWidgets.QApplication.setAttribute(Qt.AA_X11InitThreads)
+    app = QtWidgets.QApplication([])
 
     comp = Network().make()
     cnf = comp.get_config()

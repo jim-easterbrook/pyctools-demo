@@ -38,23 +38,22 @@ class Network(object):
                'pos': (100.0, 200.0)}}
     linkages = \
 {   ('hhipf', 'output'): [('interlace', 'input')],
-    ('interlace', 'output'): [   ('intra-field', 'input'),
-                                 ('line-repeat', 'input')],
+    ('interlace', 'output'): [   ('line-repeat', 'input'),
+                                 ('intra-field', 'input')],
     ('intra-field', 'output'): [('display2', 'input')],
     ('line-repeat', 'output'): [('display', 'input')],
-    ('vfr', 'output'): [('hhipf', 'input'), ('qd', 'input')]}
+    ('vfr', 'output'): [('qd', 'input'), ('hhipf', 'input')]}
 
     def make(self):
         comps = {}
         for name, component in self.components.items():
-            comps[name] = eval(component['class'])(**eval(component['config']))
+            comps[name] = eval(component['class'])(config=eval(component['config']))
         return Compound(linkages=self.linkages, **comps)
 
 if __name__ == '__main__':
-    from PyQt4 import QtGui
-    from PyQt4.QtCore import Qt
-    QtGui.QApplication.setAttribute(Qt.AA_X11InitThreads)
-    app = QtGui.QApplication([])
+    from pyctools.core.qt import Qt, QtWidgets
+    QtWidgets.QApplication.setAttribute(Qt.AA_X11InitThreads)
+    app = QtWidgets.QApplication([])
 
     comp = Network().make()
     cnf = comp.get_config()

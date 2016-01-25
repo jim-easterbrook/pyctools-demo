@@ -92,9 +92,9 @@ class Network(object):
     ('invwindow', 'output'): [('untile', 'input')],
     ('matrix', 'output'): [('demod', 'input')],
     ('postfilter', 'output'): [('yuvtorgb', 'input_UV')],
-    ('reinterlace', 'output'): [('matrix', 'input'), ('subtract', 'input1')],
+    ('reinterlace', 'output'): [('subtract', 'input1'), ('matrix', 'input')],
     ('resample', 'output'): [('display', 'input')],
-    ('setlevel', 'output'): [('subtract', 'input0'), ('deinterlace', 'input')],
+    ('setlevel', 'output'): [('deinterlace', 'input'), ('subtract', 'input0')],
     ('subtract', 'output'): [('yuvtorgb', 'input_Y')],
     ('tile', 'output'): [('window', 'input')],
     ('untile', 'output'): [('reinterlace', 'input')],
@@ -109,10 +109,9 @@ class Network(object):
         return Compound(linkages=self.linkages, **comps)
 
 if __name__ == '__main__':
-    from PyQt4 import QtGui
-    from PyQt4.QtCore import Qt
-    QtGui.QApplication.setAttribute(Qt.AA_X11InitThreads)
-    app = QtGui.QApplication([])
+    from pyctools.core.qt import Qt, QtWidgets
+    QtWidgets.QApplication.setAttribute(Qt.AA_X11InitThreads)
+    app = QtWidgets.QApplication([])
 
     comp = Network().make()
     cnf = comp.get_config()
