@@ -33,6 +33,14 @@ You may need to adjust the amount subtracted in the ``Arithmetic()`` component (
 Now you can adjust the ``VignetteCorrector()`` parameters to produce an even brightness grey image.
 As you get closer to the correct settings you can increase the multiplier (initially 4) to enhance the contrast even more.
 
+Automatic parameter setting
+---------------------------
+
+Since writing the above I've written an ``AnalyseVignette`` component to automate the process.
+The ``auto_parameters.py`` shows how it's used.
+It prints the optimum settings of ``r1``, ``r2`` and ``r3`` for a plain grey image as used above.
+You may still want to run the manual process to check the settings visually.
+
 Using the vignette corrector
 ----------------------------
 
