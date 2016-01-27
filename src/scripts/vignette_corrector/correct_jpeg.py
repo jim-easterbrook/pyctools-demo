@@ -4,37 +4,43 @@
 import argparse
 import logging
 from pyctools.core.compound import Compound
-import pyctools.components.io.imagedisplay
+import pyctools.components.colourspace.quantise
 import pyctools.components.colourspace.gammacorrection
+import pyctools.components.io.imagedisplay
 import pyctools.components.photo.vignettecorrector
 import pyctools.components.io.imagefilereader
 import pyctools.components.io.imagefilewriter
 
 class Network(object):
     components = \
-{   'gc': {   'class': 'pyctools.components.colourspace.gammacorrection.GammaCorrect',
-              'config': "{'range': 'computer', 'gamma': 'srgb'}",
+{   'efq': {   'class': 'pyctools.components.colourspace.quantise.ErrorFeedbackQuantise',
+               'config': '{}',
+               'pos': (500.0, 300.0)},
+    'gc': {   'class': 'pyctools.components.colourspace.gammacorrection.GammaCorrect',
+              'config': "{'gamma': 'srgb', 'range': 'computer'}",
               'pos': (350.0, 300.0)},
     'gc0': {   'class': 'pyctools.components.colourspace.gammacorrection.GammaCorrect',
-               'config': "{'range': 'computer', 'inverse': 'on', 'gamma': 'srgb'}",
+               'config': "{'inverse': 'on', 'gamma': 'srgb', 'range': "
+                         "'computer'}",
                'pos': (50.0, 300.0)},
     'id': {   'class': 'pyctools.components.io.imagedisplay.ImageDisplay',
               'config': '{}',
-              'pos': (650.0, 300.0)},
+              'pos': (650.0, 450.0)},
     'ifr': {   'class': 'pyctools.components.io.imagefilereader.ImageFileReader',
-               'config': "{'path': u'video/vignette.jpg'}",
+               'config': "{'path': 'video/vignette.jpg'}",
                'pos': (-100.0, 300.0)},
     'ifw': {   'class': 'pyctools.components.io.imagefilewriter.ImageFileWriter',
-               'config': '{\'path\': u\'video/vignette_corr.jpg\', \'options\': \'"quality":95\'}',
-               'pos': (500.0, 300.0)},
+               'config': "{'path': 'video/vignette_corr.jpg', 'options': "
+                         '\'"quality":95\'}',
+               'pos': (650.0, 300.0)},
     'vc': {   'class': 'pyctools.components.photo.vignettecorrector.VignetteCorrector',
-              'config': "{'range': 'computer', 'r1': 0.17, 'r2': 0.12}",
+              'config': "{'r2': 0.12, 'range': 'computer', 'r1': 0.17}",
               'pos': (200.0, 300.0)}}
     linkages = \
-{   ('gc', 'output'): [('ifw', 'input')],
+{   ('efq', 'output'): [('id', 'input'), ('ifw', 'input')],
+    ('gc', 'output'): [('efq', 'input')],
     ('gc0', 'output'): [('vc', 'input')],
     ('ifr', 'output'): [('gc0', 'input')],
-    ('ifw', 'output'): [('id', 'input')],
     ('vc', 'output'): [('gc', 'input')]}
 
     def make(self):
