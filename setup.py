@@ -2,7 +2,7 @@
 
 #  Pyctools-demo - examples of things you can do with pyctools.
 #  http://github.com/jim-easterbrook/pyctools-demo
-#  Copyright (C) 2015  Jim Easterbrook  jim@jim-easterbrook.me.uk
+#  Copyright (C) 2015-16  Jim Easterbrook  jim@jim-easterbrook.me.uk
 #
 #  This program is free software: you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License as
@@ -31,7 +31,13 @@ for root, dirs, files in os.walk('src/pyctools'):
         packages.append(package + '.' + name)
 
 # make sure each package is a "namespace package"
-init_text = "__import__('pkg_resources').declare_namespace(__name__)\n"
+init_text = """__import__('pkg_resources').declare_namespace(__name__)
+
+try:
+    from .__doc__ import __doc__
+except ImportError:
+    pass
+"""
 for package in packages:
     path = os.path.join('src', package.replace('.', os.sep), '__init__.py')
     if os.path.exists(path):
