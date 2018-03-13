@@ -2,7 +2,7 @@
 
 #  Pyctools-demo - examples of things you can do with pyctools.
 #  http://github.com/jim-easterbrook/pyctools-demo
-#  Copyright (C) 2015-16  Jim Easterbrook  jim@jim-easterbrook.me.uk
+#  Copyright (C) 2015-18  Jim Easterbrook  jim@jim-easterbrook.me.uk
 #
 #  This program is free software: you can redistribute it and/or
 #  modify it under the terms of the GNU General Public License as
@@ -21,33 +21,16 @@
 import os
 from setuptools import setup
 
+from pyctools.setup import find_packages, write_init_files
+
 version = '0.0.0'
 
 # find packages
-packages = ['pyctools']
-for root, dirs, files in os.walk('src/pyctools'):
-    package = '.'.join(root.split(os.sep)[1:])
-    for name in dirs:
-        packages.append(package + '.' + name)
+packages = find_packages()
 
-# make sure each package is a "namespace package"
-init_text = """__import__('pkg_resources').declare_namespace(__name__)
-
-try:
-    from .__doc__ import __doc__
-except ImportError:
-    pass
-"""
-for package in packages:
-    path = os.path.join('src', package.replace('.', os.sep), '__init__.py')
-    if os.path.exists(path):
-        with open(path) as f:
-            old_text = f.read()
-    else:
-        old_text = ''
-    if old_text != init_text:
-        with open(path, 'w') as f:
-            f.write(init_text)
+# Make sure each package is a "pkgutil-style namespace package"
+# See https://packaging.python.org/guides/packaging-namespace-packages/
+write_init_files(packages)
 
 setup(name = 'pyctools-demo',
       version = version,
@@ -72,8 +55,7 @@ setup(name = 'pyctools-demo',
       license = 'GNU GPL',
       platforms = ['POSIX', 'MacOS'],
       packages = packages,
-      namespace_packages = packages,
       package_dir = {'' : 'src'},
-      install_requires = ['pyctools.core'],
+      install_requires = ['pyctools.core >= 0.4.0'],
       zip_safe = False,
       )

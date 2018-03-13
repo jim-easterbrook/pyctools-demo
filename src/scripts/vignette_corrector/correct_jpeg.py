@@ -4,40 +4,47 @@
 import argparse
 import logging
 from pyctools.core.compound import Compound
-import pyctools.components.colourspace.quantise
-import pyctools.components.colourspace.gammacorrection
+import pyctools.components.io.imagefilepil
 import pyctools.components.io.imagedisplay
+import pyctools.components.colourspace.quantise
 import pyctools.components.photo.vignettecorrector
-import pyctools.components.io.imagefilereader
-import pyctools.components.io.imagefilewriter
+import pyctools.components.colourspace.gammacorrection
 
 class Network(object):
     components = \
 {   'efq': {   'class': 'pyctools.components.colourspace.quantise.ErrorFeedbackQuantise',
-               'config': '{}',
-               'pos': (500.0, 300.0)},
+               'config': "{'outframe_pool_len': 3}",
+               'pos': (440.0, 300.0)},
     'gc': {   'class': 'pyctools.components.colourspace.gammacorrection.GammaCorrect',
-              'config': "{'gamma': 'srgb', 'range': 'computer'}",
-              'pos': (350.0, 300.0)},
+              'config': "{'knee_slope': 0.25, 'gamma': 'srgb', "
+                        "'outframe_pool_len': 3, 'white': 255.0, 'inverse': "
+                        "0, 'knee_point': 0.9, 'black': 0.0, 'range': "
+                        "'computer', 'knee': 0}",
+              'pos': (310.0, 300.0)},
     'gc0': {   'class': 'pyctools.components.colourspace.gammacorrection.GammaCorrect',
-               'config': "{'inverse': 'on', 'gamma': 'srgb', 'range': "
-                         "'computer'}",
+               'config': "{'knee_slope': 0.25, 'gamma': 'srgb', "
+                         "'outframe_pool_len': 3, 'white': 255.0, "
+                         "'inverse': 1, 'knee_point': 0.9, 'black': 0.0, "
+                         "'range': 'computer', 'knee': 0}",
                'pos': (50.0, 300.0)},
     'id': {   'class': 'pyctools.components.io.imagedisplay.ImageDisplay',
-              'config': '{}',
-              'pos': (650.0, 450.0)},
-    'ifr': {   'class': 'pyctools.components.io.imagefilereader.ImageFileReader',
-               'config': "{'path': 'video/vignette.jpg'}",
-               'pos': (-100.0, 300.0)},
-    'ifw': {   'class': 'pyctools.components.io.imagefilewriter.ImageFileWriter',
-               'config': "{'path': 'video/vignette_corr.jpg', 'options': "
-                         '\'"quality":95\'}',
-               'pos': (650.0, 300.0)},
+              'config': "{'outframe_pool_len': 3}",
+              'pos': (570.0, 420.0)},
+    'ifr': {   'class': 'pyctools.components.io.imagefilepil.ImageFileReaderPIL',
+               'config': "{'path': "
+                         "'/home/jim/Documents/projects/pyctools-demo/video/vignette.jpg'}",
+               'pos': (-80.0, 300.0)},
+    'ifw': {   'class': 'pyctools.components.io.imagefilepil.ImageFileWriterPIL',
+               'config': '{\'options\': \'"quality":95\', \'path\': '
+                         "'/home/jim/Documents/projects/pyctools-demo/video/vignette_corr.jpg', "
+                         "'format': '', 'outframe_pool_len': 3}",
+               'pos': (570.0, 300.0)},
     'vc': {   'class': 'pyctools.components.photo.vignettecorrector.VignetteCorrector',
-              'config': "{'r2': 0.12, 'range': 'computer', 'r1': 0.17}",
-              'pos': (200.0, 300.0)}}
+              'config': "{'r6': 0.0, 'r2': 0.17, 'range': 'computer', 'r8': "
+                        "0.0, 'outframe_pool_len': 3, 'r4': 0.12}",
+              'pos': (180.0, 300.0)}}
     linkages = \
-{   ('efq', 'output'): [('id', 'input'), ('ifw', 'input')],
+{   ('efq', 'output'): [('ifw', 'input'), ('id', 'input')],
     ('gc', 'output'): [('efq', 'input')],
     ('gc0', 'output'): [('vc', 'input')],
     ('ifr', 'output'): [('gc0', 'input')],

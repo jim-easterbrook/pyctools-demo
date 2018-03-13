@@ -4,42 +4,53 @@
 import argparse
 import logging
 from pyctools.core.compound import Compound
-import pyctools.components.qt.qtdisplay
 import pyctools.components.pal.decoder
-import pyctools.components.arithmetic
-import pyctools.components.io.videofilereader
-import pyctools.components.pal.common
+import pyctools.components.qt.qtdisplay
 import pyctools.components.colourspace.yuvtorgb
+import pyctools.components.arithmetic
+import pyctools.components.pal.common
+import pyctools.components.io.videofilereader
 
 class Network(object):
     components = \
 {   'demod': {   'class': 'pyctools.components.pal.common.ModulateUV',
-                 'config': '{}',
-                 'pos': (500.0, 500.0)},
+                 'config': "{'outframe_pool_len': 3}",
+                 'pos': (480.0, 470.0)},
     'display': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
-                   'config': "{'repeat': 'on', 'sync': 'on'}",
-                   'pos': (1100.0, 350.0)},
+                   'config': "{'outframe_pool_len': 3, 'shrink': 1, 'sync': "
+                             "1, 'title': '', 'repeat': 1, 'expand': 1, "
+                             "'stats': 0, 'framerate': 25}",
+                   'pos': (1000.0, 350.0)},
     'filereader': {   'class': 'pyctools.components.io.videofilereader.VideoFileReader',
-                      'config': "{'path': 'video/coded_pal.avi', '16bit': 'on', 'type': 'Y', 'looping': 'repeat'}",
-                      'pos': (50.0, 350.0)},
+                      'config': "{'16bit': 1, 'outframe_pool_len': 3, "
+                                "'path': "
+                                "'/home/jim/Documents/projects/pyctools-demo/video/coded_pal.avi', "
+                                "'type': 'Y', 'looping': 'repeat'}",
+                      'pos': (90.0, 350.0)},
     'filterUV': {   'class': 'pyctools.components.pal.decoder.PostFilterUV',
-                    'config': '{}',
-                    'pos': (650.0, 500.0)},
+                    'config': "{'xdown': 1, 'outframe_pool_len': 3, "
+                              "'ydown': 1, 'xup': 1, 'yup': 1}",
+                    'pos': (610.0, 470.0)},
     'filterY': {   'class': 'pyctools.components.pal.decoder.PostFilterY',
-                   'config': '{}',
+                   'config': "{'xdown': 1, 'outframe_pool_len': 3, 'ydown': "
+                             "1, 'xup': 1, 'yup': 1}",
                    'pos': (350.0, 350.0)},
     'matrix': {   'class': 'pyctools.components.pal.decoder.FromPAL',
-                  'config': '{}',
-                  'pos': (350.0, 500.0)},
+                  'config': "{'outframe_pool_len': 3}",
+                  'pos': (350.0, 470.0)},
     'resample': {   'class': 'pyctools.components.pal.common.From4Fsc',
-                    'config': "{'xdown': 461, 'xup': 351}",
-                    'pos': (950.0, 350.0)},
+                    'config': "{'xdown': 461, 'outframe_pool_len': 3, "
+                              "'ydown': 1, 'xup': 351, 'yup': 1}",
+                    'pos': (870.0, 350.0)},
     'setlevel': {   'class': 'pyctools.components.arithmetic.Arithmetic',
-                    'config': "{'func': '((data - pt_float(64)) * pt_float(219.0 / 140.0)) + pt_float(16)'}",
-                    'pos': (200.0, 350.0)},
+                    'config': "{'outframe_pool_len': 3, 'func': '((data - "
+                              'pt_float(64)) * pt_float(219.0 / 140.0)) + '
+                              "pt_float(16)'}",
+                    'pos': (220.0, 350.0)},
     'yuvrgb': {   'class': 'pyctools.components.colourspace.yuvtorgb.YUVtoRGB',
-                  'config': "{'matrix': '601'}",
-                  'pos': (800.0, 350.0)}}
+                  'config': "{'outframe_pool_len': 3, 'matrix': '601', "
+                            "'range': 'studio'}",
+                  'pos': (740.0, 350.0)}}
     linkages = \
 {   ('demod', 'output'): [('filterUV', 'input')],
     ('filereader', 'output'): [('setlevel', 'input')],
@@ -47,7 +58,7 @@ class Network(object):
     ('filterY', 'output'): [('yuvrgb', 'input_Y')],
     ('matrix', 'output'): [('demod', 'input')],
     ('resample', 'output'): [('display', 'input')],
-    ('setlevel', 'output'): [('filterY', 'input'), ('matrix', 'input')],
+    ('setlevel', 'output'): [('matrix', 'input'), ('filterY', 'input')],
     ('yuvrgb', 'output'): [('resample', 'input')]}
 
     def make(self):
@@ -57,8 +68,8 @@ class Network(object):
         return Compound(linkages=self.linkages, **comps)
 
 if __name__ == '__main__':
-    from pyctools.core.qt import Qt, QtWidgets
-    QtWidgets.QApplication.setAttribute(Qt.AA_X11InitThreads)
+    from PyQt5 import QtCore, QtWidgets
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_X11InitThreads)
     app = QtWidgets.QApplication([])
 
     comp = Network().make()

@@ -4,11 +4,11 @@
 import argparse
 import logging
 from pyctools.core.compound import Compound
+import pyctools.components.qt.qtdisplay
+import pyctools.components.interp.filtergenerator
 import pyctools.components.colourspace.rgbtoy
 import pyctools.components.photo.vignettecorrector
 import pyctools.components.io.rawimagefilereader
-import pyctools.components.interp.filtergenerator
-import pyctools.components.qt.qtdisplay
 import pyctools.components.arithmetic
 import pyctools.components.interp.resize
 import pyctools.components.framerepeat
@@ -16,35 +16,55 @@ import pyctools.components.framerepeat
 class Network(object):
     components = \
 {   'contrast': {   'class': 'pyctools.components.arithmetic.Arithmetic',
-                    'config': "{'func': '((data - 50) * 64) + 128'}",
-                    'pos': (950.0, 300.0)},
+                    'config': "{'func': '((data - 50) * 64) + 128', "
+                              "'outframe_pool_len': 3}",
+                    'pos': (830.0, 300.0)},
     'fg': {   'class': 'pyctools.components.interp.filtergenerator.FilterGenerator',
-              'config': "{'ydown': 5, 'xaperture': 16, 'yaperture': 16, 'xdown': 5}",
-              'pos': (50.0, 450.0)},
+              'config': "{'xaperture': 16, 'yaperture': 16, 'ydown': 5, "
+                        "'xcut': 100, 'yup': 1, 'xdown': 5, 'ycut': 100, "
+                        "'xup': 1}",
+              'pos': (50.0, 420.0)},
     'fr': {   'class': 'pyctools.components.framerepeat.FrameRepeat',
-              'config': "{'count': 1000}",
-              'pos': (650.0, 300.0)},
+              'config': "{'outframe_pool_len': 3, 'count': 1000}",
+              'pos': (570.0, 300.0)},
     'lr_average': {   'class': 'pyctools.components.arithmetic.Arithmetic',
-                      'config': "{'func': '(data + data[::,-1::-1,::])/2.0'}",
-                      'pos': (350.0, 300.0)},
+                      'config': "{'func': '(data + "
+                                "data[::,-1::-1,::])/2.0', "
+                                "'outframe_pool_len': 3}",
+                      'pos': (310.0, 300.0)},
     'qd': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
-              'config': "{'repeat': 'on', 'framerate': 5, 'sync': 'on'}",
-              'pos': (1100.0, 300.0)},
+              'config': "{'title': '', 'outframe_pool_len': 3, 'stats': 0, "
+                        "'framerate': 5, 'sync': 1, 'repeat': 1, 'shrink': "
+                        "1, 'expand': 1}",
+              'pos': (960.0, 300.0)},
     'r': {   'class': 'pyctools.components.interp.resize.Resize',
-             'config': "{'ydown': 5, 'xdown': 5}",
-             'pos': (200.0, 300.0)},
+             'config': "{'yup': 1, 'xdown': 5, 'ydown': 5, "
+                       "'outframe_pool_len': 3, 'xup': 1}",
+             'pos': (180.0, 300.0)},
     'rgby': {   'class': 'pyctools.components.colourspace.rgbtoy.RGBtoY',
-                'config': "{'range': 'computer'}",
+                'config': "{'range': 'computer', 'outframe_pool_len': 3, "
+                          "'matrix': 'auto'}",
                 'pos': (50.0, 300.0)},
     'rifr': {   'class': 'pyctools.components.io.rawimagefilereader.RawImageFileReader',
-                'config': "{'path': u'video/grey.CR2', '16bit': 'on', 'interpolation': 'ahd', 'brightness': 2.3}",
-                'pos': (-100.0, 300.0)},
+                'config': "{'gamma': 'linear', 'crop': 1, 'wb_camera': 1, "
+                          "'path': "
+                          "'/home/jim/Documents/projects/pyctools-demo/video/grey.CR2', "
+                          "'wb_rgbg': '', 'use_camera_profile': 0, "
+                          "'highlight_mode': 'clip', 'blue_scale': 1.0, "
+                          "'noise_threshold': 0.0, 'colourspace': 'srgb', "
+                          "'16bit': 1, 'interpolation': 'ahd', "
+                          "'wb_greybox': '', 'wb_auto': 0, 'brightness': "
+                          "2.3, 'red_scale': 1.0}",
+                'pos': (-80.0, 300.0)},
     'tb_average': {   'class': 'pyctools.components.arithmetic.Arithmetic',
-                      'config': "{'func': '(data + data[-1::-1,::,::])/2.0'}",
-                      'pos': (500.0, 300.0)},
+                      'config': "{'func': '(data + "
+                                "data[-1::-1,::,::])/2.0', "
+                                "'outframe_pool_len': 3}",
+                      'pos': (440.0, 300.0)},
     'vc': {   'class': 'pyctools.components.photo.vignettecorrector.VignetteCorrector',
-              'config': "{'range': 'computer', 'r1': 0.17, 'r2': 0.12}",
-              'pos': (800.0, 300.0)}}
+              'config': "{'outframe_pool_len': 3, 'r6': 0.0, 'r2': 0.17, "
+                        "'r8': 0.0, 'range': 'computer', 'r4': 0.12}",
+              'pos': (700.0, 300.0)}}
     linkages = \
 {   ('contrast', 'output'): [('qd', 'input')],
     ('fg', 'output'): [('r', 'filter')],
@@ -63,8 +83,8 @@ class Network(object):
         return Compound(linkages=self.linkages, **comps)
 
 if __name__ == '__main__':
-    from pyctools.core.qt import Qt, QtWidgets
-    QtWidgets.QApplication.setAttribute(Qt.AA_X11InitThreads)
+    from PyQt5 import QtCore, QtWidgets
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_X11InitThreads)
     app = QtWidgets.QApplication([])
 
     comp = Network().make()

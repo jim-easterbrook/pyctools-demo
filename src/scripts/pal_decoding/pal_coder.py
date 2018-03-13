@@ -4,47 +4,60 @@
 import argparse
 import logging
 from pyctools.core.compound import Compound
-import pyctools.components.pal.coder
+import pyctools.components.pal.common
 import pyctools.components.qt.qtdisplay
 import pyctools.components.arithmetic
-import pyctools.components.io.videofilereader
-import pyctools.components.pal.common
-import pyctools.components.io.videofilewriter
 import pyctools.components.adder
+import pyctools.components.pal.coder
+import pyctools.components.io.videofilewriter
 import pyctools.components.colourspace.rgbtoyuv
+import pyctools.components.io.videofilereader
 
 class Network(object):
     components = \
 {   'adder': {   'class': 'pyctools.components.adder.Adder',
-                 'config': '{}',
-                 'pos': (600.0, -50.0)},
+                 'config': "{'outframe_pool_len': 3}",
+                 'pos': (520.0, -50.0)},
     'display': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
-                   'config': "{'repeat': 'on', 'framerate': 40, 'sync': 'on'}",
-                   'pos': (900.0, 150.0)},
+                   'config': "{'outframe_pool_len': 3, 'shrink': 1, 'sync': "
+                             "1, 'title': '', 'repeat': 1, 'expand': 1, "
+                             "'stats': 0, 'framerate': 40}",
+                   'pos': (780.0, 70.0)},
     'filereader': {   'class': 'pyctools.components.io.videofilereader.VideoFileReader',
-                      'config': "{'path': 'video/still_wobble.avi'}",
-                      'pos': (-300.0, -50.0)},
+                      'config': "{'16bit': 0, 'outframe_pool_len': 3, "
+                                "'path': "
+                                "'/home/jim/Documents/projects/pyctools-demo/video/still_wobble.avi', "
+                                "'type': 'RGB', 'looping': 'off'}",
+                      'pos': (-260.0, -50.0)},
     'filewriter': {   'class': 'pyctools.components.io.videofilewriter.VideoFileWriter',
-                      'config': "{'path': 'video/coded_pal.avi', '16bit': 'on', 'encoder': '-c:v ffv1 -pix_fmt gray16le'}",
-                      'pos': (900.0, -50.0)},
+                      'config': "{'encoder': '-c:v ffv1 -pix_fmt gray16le', "
+                                "'outframe_pool_len': 3, 'path': "
+                                "'/home/jim/Documents/projects/pyctools-demo/video/coded_pal.avi', "
+                                "'fps': 25, '16bit': 1}",
+                      'pos': (780.0, -50.0)},
     'matrix': {   'class': 'pyctools.components.pal.coder.UVtoC',
-                  'config': '{}',
-                  'pos': (450.0, 150.0)},
+                  'config': "{'outframe_pool_len': 3}",
+                  'pos': (390.0, 30.0)},
     'modulator': {   'class': 'pyctools.components.pal.common.ModulateUV',
-                     'config': '{}',
-                     'pos': (300.0, 150.0)},
+                     'config': "{'outframe_pool_len': 3}",
+                     'pos': (260.0, 30.0)},
     'prefilter': {   'class': 'pyctools.components.pal.coder.PreFilterUV',
-                     'config': '{}',
-                     'pos': (150.0, 150.0)},
+                     'config': "{'xdown': 1, 'outframe_pool_len': 3, "
+                               "'ydown': 1, 'xup': 1, 'yup': 1}",
+                     'pos': (130.0, 30.0)},
     'resample': {   'class': 'pyctools.components.pal.common.To4Fsc',
-                    'config': "{'xdown': 351, 'xup': 461}",
-                    'pos': (-150.0, -50.0)},
+                    'config': "{'xdown': 351, 'outframe_pool_len': 3, "
+                              "'ydown': 1, 'xup': 461, 'yup': 1}",
+                    'pos': (-130.0, -50.0)},
     'rgbyuv': {   'class': 'pyctools.components.colourspace.rgbtoyuv.RGBtoYUV',
-                  'config': "{'outframe_pool_len': 5, 'matrix': '601'}",
+                  'config': "{'outframe_pool_len': 5, 'matrix': '601', "
+                            "'range': 'studio'}",
                   'pos': (0.0, -50.0)},
     'setlevel': {   'class': 'pyctools.components.arithmetic.Arithmetic',
-                    'config': "{'func': '((data - pt_float(16.0)) * pt_float(140.0 / 219.0)) + pt_float(64.0)'}",
-                    'pos': (750.0, -50.0)}}
+                    'config': "{'outframe_pool_len': 3, 'func': '((data - "
+                              'pt_float(16.0)) * pt_float(140.0 / 219.0)) + '
+                              "pt_float(64.0)'}",
+                    'pos': (650.0, -50.0)}}
     linkages = \
 {   ('adder', 'output'): [('setlevel', 'input')],
     ('filereader', 'output'): [('resample', 'input')],
@@ -54,7 +67,7 @@ class Network(object):
     ('resample', 'output'): [('rgbyuv', 'input')],
     ('rgbyuv', 'output_UV'): [('prefilter', 'input')],
     ('rgbyuv', 'output_Y'): [('adder', 'input0')],
-    ('setlevel', 'output'): [('filewriter', 'input'), ('display', 'input')]}
+    ('setlevel', 'output'): [('display', 'input'), ('filewriter', 'input')]}
 
     def make(self):
         comps = {}
@@ -63,8 +76,8 @@ class Network(object):
         return Compound(linkages=self.linkages, **comps)
 
 if __name__ == '__main__':
-    from pyctools.core.qt import Qt, QtWidgets
-    QtWidgets.QApplication.setAttribute(Qt.AA_X11InitThreads)
+    from PyQt5 import QtCore, QtWidgets
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_X11InitThreads)
     app = QtWidgets.QApplication([])
 
     comp = Network().make()

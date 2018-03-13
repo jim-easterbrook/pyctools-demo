@@ -4,22 +4,31 @@
 import argparse
 import logging
 from pyctools.core.compound import Compound
-import pyctools.components.photo.vignettecorrector
 import pyctools.components.colourspace.rgbtoy
+import pyctools.components.photo.vignettecorrector
 import pyctools.components.io.rawimagefilereader
 
 class Network(object):
     components = \
 {   'av': {   'class': 'pyctools.components.photo.vignettecorrector.AnalyseVignette',
-              'config': "{'range': 'computer'}",
-              'pos': (200.0, 300.0)},
+              'config': "{'outframe_pool_len': 3, 'range': 'computer', "
+                        "'order': 3, 'log_eps': -4.0}",
+              'pos': (180.0, 300.0)},
     'rgby': {   'class': 'pyctools.components.colourspace.rgbtoy.RGBtoY',
-                'config': "{'range': 'computer'}",
+                'config': "{'outframe_pool_len': 3, 'range': 'computer', "
+                          "'matrix': 'auto'}",
                 'pos': (50.0, 300.0)},
     'rifr': {   'class': 'pyctools.components.io.rawimagefilereader.RawImageFileReader',
-                'config': "{'interpolation': 'ahd', 'brightness': 2.3, "
-                          "'16bit': 'on', 'path': 'video/grey.CR2'}",
-                'pos': (-100.0, 300.0)}}
+                'config': "{'path': "
+                          "'/home/jim/Documents/projects/pyctools-demo/video/grey.CR2', "
+                          "'wb_rgbg': '', 'gamma': 'linear', 'wb_auto': 0, "
+                          "'noise_threshold': 0.0, 'highlight_mode': "
+                          "'clip', 'wb_greybox': '', '16bit': 1, "
+                          "'blue_scale': 1.0, 'brightness': 2.3, "
+                          "'wb_camera': 1, 'colourspace': 'srgb', "
+                          "'use_camera_profile': 0, 'interpolation': 'ahd', "
+                          "'crop': 1, 'red_scale': 1.0}",
+                'pos': (-80.0, 300.0)}}
     linkages = \
 {   ('rgby', 'output'): [('av', 'input')],
     ('rifr', 'output'): [('rgby', 'input')]}
