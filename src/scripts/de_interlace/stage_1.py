@@ -4,57 +4,42 @@
 import argparse
 import logging
 from pyctools.core.compound import Compound
-import pyctools.components.qt.qtdisplay
-import pyctools.components.deinterlace.simple
 import pyctools.components.deinterlace.hhiprefilter
+import pyctools.components.deinterlace.simple
+import pyctools.components.qt.qtdisplay
 import pyctools.components.zone.zoneplategenerator
 
 class Network(object):
     components = \
 {   'deinterlace': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
-                       'config': "{'outframe_pool_len': 3, 'inverse': 0, "
-                                 "'topfirst': 1, 'mode': 'repeatline'}",
+                       'config': "{'mode': 'repeatline'}",
                        'pos': (510.0, 170.0)},
     'deinterlace2': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
-                        'config': "{'outframe_pool_len': 3, 'inverse': 0, "
-                                  "'topfirst': 1, 'mode': 'repeatline'}",
+                        'config': "{'mode': 'repeatline'}",
                         'pos': (510.0, 300.0)},
     'display': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
-                   'config': "{'outframe_pool_len': 3, 'shrink': 1, 'sync': "
-                             "1, 'framerate': 20, 'repeat': 1, 'title': "
-                             "'Interlaced, filtered', 'expand': 1, 'stats': "
-                             '0}',
+                   'config': "{'title': 'Interlaced, filtered', "
+                             "'framerate': 20}",
                    'pos': (640.0, 170.0)},
     'display2': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
-                    'config': "{'outframe_pool_len': 3, 'shrink': 1, "
-                              "'sync': 1, 'framerate': 20, 'repeat': 1, "
-                              "'title': 'Interlaced, unfiltered', 'expand': "
-                              "1, 'stats': 0}",
+                    'config': "{'title': 'Interlaced, unfiltered', "
+                              "'framerate': 20}",
                     'pos': (640.0, 300.0)},
     'hhipf': {   'class': 'pyctools.components.deinterlace.hhiprefilter.HHIPreFilter',
-                 'config': "{'outframe_pool_len': 3, 'xup': 1, 'xdown': 1, "
-                           "'yup': 1, 'ydown': 1}",
+                 'config': '{}',
                  'pos': (250.0, 170.0)},
     'interlace': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
-                     'config': "{'outframe_pool_len': 3, 'inverse': 1, "
-                               "'topfirst': 1, 'mode': 'insertzero'}",
+                     'config': "{'inverse': 1}",
                      'pos': (380.0, 170.0)},
     'interlace2': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
-                      'config': "{'outframe_pool_len': 3, 'inverse': 1, "
-                                "'topfirst': 1, 'mode': 'insertzero'}",
+                      'config': "{'inverse': 1}",
                       'pos': (380.0, 300.0)},
     'qd': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
-              'config': "{'outframe_pool_len': 3, 'shrink': 1, 'sync': 1, "
-                        "'framerate': 20, 'repeat': 1, 'title': 'Original', "
-                        "'expand': 1, 'stats': 0}",
+              'config': "{'title': 'Original', 'framerate': 20}",
               'pos': (250.0, 430.0)},
     'zpg': {   'class': 'pyctools.components.zone.zoneplategenerator.ZonePlateGenerator',
-               'config': "{'kyt': 0.0, 'ky2': 0.0, 'ky': 0.0, 'kt2': 0.0, "
-                         "'xlen': 400, 'kx2': 0.0, 'zlen': 100, "
-                         "'outframe_pool_len': 3, 'kt': 0.02, 'kx': 0.5, "
-                         "'kyx': 0.0, 'kxt': 0.0, 'looping': 'repeat', "
-                         "'kty': 0.0, 'kxy': 1.0, 'ylen': 400, 'k0': 0.0, "
-                         "'ktx': 0.0}",
+               'config': "{'kx': 0.5, 'kt': 0.02, 'kxy': 1.0, 'xlen': 400, "
+                         "'ylen': 400, 'looping': 'repeat'}",
                'pos': (100.0, 300.0)}}
     linkages = \
 {   ('deinterlace', 'output'): [('display', 'input')],
@@ -62,9 +47,9 @@ class Network(object):
     ('hhipf', 'output'): [('interlace', 'input')],
     ('interlace', 'output'): [('deinterlace', 'input')],
     ('interlace2', 'output'): [('deinterlace2', 'input')],
-    ('zpg', 'output'): [   ('hhipf', 'input'),
+    ('zpg', 'output'): [   ('qd', 'input'),
                            ('interlace2', 'input'),
-                           ('qd', 'input')]}
+                           ('hhipf', 'input')]}
 
     def make(self):
         comps = {}
@@ -79,7 +64,8 @@ if __name__ == '__main__':
 
     comp = Network().make()
     cnf = comp.get_config()
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     cnf.parser_add(parser)
     parser.add_argument('-v', '--verbose', action='count', default=0,
                         help='increase verbosity of log messages')

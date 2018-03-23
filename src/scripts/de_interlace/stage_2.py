@@ -4,54 +4,43 @@
 import argparse
 import logging
 from pyctools.core.compound import Compound
-import pyctools.components.qt.qtdisplay
-import pyctools.components.deinterlace.simple
 import pyctools.components.deinterlace.hhiprefilter
+import pyctools.components.deinterlace.simple
 import pyctools.components.io.videofilereader
+import pyctools.components.qt.qtdisplay
 
 class Network(object):
     components = \
 {   'deinterlace': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
-                       'config': "{'outframe_pool_len': 3, 'inverse': 0, "
-                                 "'topfirst': 1, 'mode': 'repeatline'}",
+                       'config': "{'mode': 'repeatline'}",
                        'pos': (510.0, 170.0)},
     'deinterlace2': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
-                        'config': "{'outframe_pool_len': 3, 'inverse': 0, "
-                                  "'topfirst': 1, 'mode': 'repeatline'}",
+                        'config': "{'mode': 'repeatline'}",
                         'pos': (510.0, 300.0)},
     'display': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
-                   'config': "{'outframe_pool_len': 3, 'shrink': 1, 'sync': "
-                             "1, 'framerate': 20, 'repeat': 1, 'title': "
-                             "'Interlaced, filtered', 'expand': 1, 'stats': "
-                             '0}',
+                   'config': "{'title': 'Interlaced, filtered', "
+                             "'framerate': 20}",
                    'pos': (640.0, 170.0)},
     'display2': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
-                    'config': "{'outframe_pool_len': 3, 'shrink': 1, "
-                              "'sync': 1, 'framerate': 20, 'repeat': 1, "
-                              "'title': 'Interlaced, unfiltered', 'expand': "
-                              "1, 'stats': 0}",
+                    'config': "{'title': 'Interlaced, unfiltered', "
+                              "'framerate': 20}",
                     'pos': (640.0, 300.0)},
     'hhipf': {   'class': 'pyctools.components.deinterlace.hhiprefilter.HHIPreFilter',
-                 'config': "{'outframe_pool_len': 3, 'xup': 1, 'xdown': 1, "
-                           "'yup': 1, 'ydown': 1}",
+                 'config': '{}',
                  'pos': (250.0, 170.0)},
     'interlace': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
-                     'config': "{'outframe_pool_len': 3, 'inverse': 1, "
-                               "'topfirst': 1, 'mode': 'insertzero'}",
+                     'config': "{'inverse': 1}",
                      'pos': (380.0, 170.0)},
     'interlace2': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
-                      'config': "{'outframe_pool_len': 3, 'inverse': 1, "
-                                "'topfirst': 1, 'mode': 'insertzero'}",
+                      'config': "{'inverse': 1}",
                       'pos': (380.0, 300.0)},
     'qd': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
-              'config': "{'outframe_pool_len': 3, 'shrink': 1, 'sync': 1, "
-                        "'framerate': 20, 'repeat': 1, 'title': 'Original', "
-                        "'expand': 1, 'stats': 0}",
+              'config': "{'title': 'Original', 'framerate': 20}",
               'pos': (250.0, 430.0)},
     'vfr': {   'class': 'pyctools.components.io.videofilereader.VideoFileReader',
-               'config': "{'outframe_pool_len': 3, 'path': "
+               'config': "{'path': "
                          "'/home/jim/Documents/projects/pyctools-demo/video/still_wobble.avi', "
-                         "'looping': 'repeat', 'type': 'RGB', '16bit': 0}",
+                         "'looping': 'repeat'}",
                'pos': (100.0, 300.0)}}
     linkages = \
 {   ('deinterlace', 'output'): [('display', 'input')],
@@ -59,9 +48,9 @@ class Network(object):
     ('hhipf', 'output'): [('interlace', 'input')],
     ('interlace', 'output'): [('deinterlace', 'input')],
     ('interlace2', 'output'): [('deinterlace2', 'input')],
-    ('vfr', 'output'): [   ('qd', 'input'),
+    ('vfr', 'output'): [   ('hhipf', 'input'),
                            ('interlace2', 'input'),
-                           ('hhipf', 'input')]}
+                           ('qd', 'input')]}
 
     def make(self):
         comps = {}
@@ -76,7 +65,8 @@ if __name__ == '__main__':
 
     comp = Network().make()
     cnf = comp.get_config()
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     cnf.parser_add(parser)
     parser.add_argument('-v', '--verbose', action='count', default=0,
                         help='increase verbosity of log messages')

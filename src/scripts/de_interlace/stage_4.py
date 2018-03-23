@@ -4,66 +4,50 @@
 import argparse
 import logging
 from pyctools.core.compound import Compound
-import pyctools.components.qt.qtdisplay
-import pyctools.components.deinterlace.simple
 import pyctools.components.deinterlace.hhiprefilter
 import pyctools.components.deinterlace.intrafield
-import pyctools.components.io.videofilereader
+import pyctools.components.deinterlace.simple
 import pyctools.components.deinterlace.weston3field
+import pyctools.components.io.videofilereader
+import pyctools.components.qt.qtdisplay
 
 class Network(object):
     components = \
 {   'Weston': {   'class': 'pyctools.components.deinterlace.weston3field.Weston3Field',
-                  'config': "{'outframe_pool_len': 3, 'topfirst': 1, "
-                            "'mode': 1}",
+                  'config': "{'mode': 1}",
                   'pos': (610.0, 270.0)},
     'display': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
-                   'config': "{'outframe_pool_len': 3, 'shrink': 1, 'sync': "
-                             "1, 'framerate': 20, 'repeat': 1, 'title': "
-                             "'intra-field', 'expand': 1, 'stats': 0}",
+                   'config': "{'title': 'intra-field', 'framerate': 20}",
                    'pos': (740.0, 150.0)},
     'display2': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
-                    'config': "{'outframe_pool_len': 3, 'shrink': 1, "
-                              "'sync': 1, 'framerate': 20, 'repeat': 1, "
-                              "'title': 'Weston', 'expand': 1, 'stats': 0}",
+                    'config': "{'title': 'Weston', 'framerate': 20}",
                     'pos': (740.0, 270.0)},
     'hhipf': {   'class': 'pyctools.components.deinterlace.hhiprefilter.HHIPreFilter',
-                 'config': "{'outframe_pool_len': 3, 'xup': 1, 'xdown': 1, "
-                           "'yup': 1, 'ydown': 1}",
+                 'config': '{}',
                  'pos': (350.0, 200.0)},
     'interlace': {   'class': 'pyctools.components.deinterlace.simple.SimpleDeinterlace',
-                     'config': "{'outframe_pool_len': 3, 'inverse': 1, "
-                               "'topfirst': 1, 'mode': 'insertzero'}",
+                     'config': "{'inverse': 1}",
                      'pos': (480.0, 200.0)},
     'intra-field': {   'class': 'pyctools.components.deinterlace.intrafield.IntraField',
-                       'config': "{'deint': {'outframe_pool_len': 3, "
-                                 "'inverse': 0, 'topfirst': 1, 'mode': "
-                                 "'insertzero'}, 'interp': "
-                                 "{'outframe_pool_len': 3, 'xup': 1, "
-                                 "'xdown': 1, 'yup': 1, 'ydown': 1}, "
-                                 "'gain': {'outframe_pool_len': 3, 'func': "
-                                 "'data * pt_float(2)'}, 'filgen': {'xcut': "
-                                 "100, 'ycut': 50, 'yup': 1, 'xaperture': "
-                                 "1, 'xup': 1, 'xdown': 1, 'ydown': 1, "
-                                 "'yaperture': 8}}",
+                       'config': "{'interp': {}, 'gain': {'func': 'data * "
+                                 "pt_float(2)'}, 'deint': {}, 'filgen': "
+                                 "{'yaperture': 8, 'ycut': 50}}",
                        'expanded': False,
                        'pos': (610.0, 150.0)},
     'qd': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
-              'config': "{'outframe_pool_len': 3, 'shrink': 1, 'sync': 1, "
-                        "'framerate': 20, 'repeat': 1, 'title': 'Original', "
-                        "'expand': 1, 'stats': 0}",
+              'config': "{'title': 'Original', 'framerate': 20}",
               'pos': (350.0, 320.0)},
     'vfr': {   'class': 'pyctools.components.io.videofilereader.VideoFileReader',
-               'config': "{'outframe_pool_len': 3, 'path': "
+               'config': "{'path': "
                          "'/home/jim/Documents/projects/pyctools-demo/video/still_wobble.avi', "
-                         "'looping': 'repeat', 'type': 'RGB', '16bit': 0}",
+                         "'looping': 'repeat'}",
                'pos': (220.0, 200.0)}}
     linkages = \
 {   ('Weston', 'output'): [('display2', 'input')],
     ('hhipf', 'output'): [('interlace', 'input')],
-    ('interlace', 'output'): [('Weston', 'input'), ('intra-field', 'input')],
+    ('interlace', 'output'): [('intra-field', 'input'), ('Weston', 'input')],
     ('intra-field', 'output'): [('display', 'input')],
-    ('vfr', 'output'): [('qd', 'input'), ('hhipf', 'input')]}
+    ('vfr', 'output'): [('hhipf', 'input'), ('qd', 'input')]}
 
     def make(self):
         comps = {}
@@ -78,7 +62,8 @@ if __name__ == '__main__':
 
     comp = Network().make()
     cnf = comp.get_config()
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     cnf.parser_add(parser)
     parser.add_argument('-v', '--verbose', action='count', default=0,
                         help='increase verbosity of log messages')
