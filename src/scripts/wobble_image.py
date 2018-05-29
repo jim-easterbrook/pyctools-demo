@@ -4,65 +4,56 @@
 import argparse
 import logging
 from pyctools.core.compound import Compound
-import pyctools.components.io.videofilewriter
-import pyctools.components.qt.qtdisplay
-import pyctools.components.interp.resize
-import pyctools.components.io.imagefilereader
 import pyctools.components.demo.displace
 import pyctools.components.fft.fft
-import pyctools.components.interp.filtergenerator
-import pyctools.components.io.dumpmetadata
 import pyctools.components.framerepeat
+import pyctools.components.interp.imageresizer
+import pyctools.components.io.dumpmetadata
+import pyctools.components.io.imagefilepil
+import pyctools.components.io.videofilewriter
+import pyctools.components.qt.qtdisplay
 
 class Network(object):
     components = \
 {   'd': {   'class': 'pyctools.components.demo.displace.Displace',
-             'config': "{'zlen': 100, 'yamp': 60.0, 'xamp': 60.0}",
-             'pos': (650.0, 100.0)},
+             'config': "{'xamp': 60.0, 'yamp': 60.0, 'zlen': 100}",
+             'pos': (830.0, 100.0)},
     'dm': {   'class': 'pyctools.components.io.dumpmetadata.DumpMetadata',
               'config': '{}',
-              'pos': (1550.0, 100.0)},
+              'pos': (1430.0, 100.0)},
     'fft': {   'class': 'pyctools.components.fft.fft.FFT',
                'config': '{}',
-               'pos': (350.0, 100.0)},
-    'fg': {   'class': 'pyctools.components.interp.filtergenerator.FilterGenerator',
-              'config': "{'xaperture': 16, 'xdown': 6}",
-              'pos': (800.0, 250.0)},
-    'fg0': {   'class': 'pyctools.components.interp.filtergenerator.FilterGenerator',
-               'config': "{'ydown': 6, 'yaperture': 16}",
-               'pos': (950.0, 250.0)},
+               'pos': (590.0, 100.0)},
     'fr': {   'class': 'pyctools.components.framerepeat.FrameRepeat',
               'config': "{'count': 100}",
-              'pos': (500.0, 100.0)},
+              'pos': (710.0, 100.0)},
     'ifft': {   'class': 'pyctools.components.fft.fft.FFT',
-                'config': "{'output': 'real', 'inverse': 'on'}",
-                'pos': (800.0, 100.0)},
-    'ifr': {   'class': 'pyctools.components.io.imagefilereader.ImageFileReader',
-               'config': "{'path': 'video/still.jpg'}",
-               'pos': (200.0, 100.0)},
+                'config': "{'inverse': 1, 'output': 'real'}",
+                'pos': (950.0, 100.0)},
+    'ifr': {   'class': 'pyctools.components.io.imagefilepil.ImageFileReaderPIL',
+               'config': "{'path': "
+                         "'/home/jim/Documents/projects/pyctools-demo/video/still.jpg'}",
+               'pos': (470.0, 100.0)},
+    'ird': {   'class': 'pyctools.components.interp.imageresizer.ImageResizer2D',
+               'config': "{'xdown': 6, 'xaperture': 16, 'ydown': 6, "
+                         "'yaperture': 16}",
+               'expanded': False,
+               'pos': (1070.0, 100.0)},
     'qd': {   'class': 'pyctools.components.qt.qtdisplay.QtDisplay',
-              'config': "{'repeat': 'on', 'sync': 'on'}",
-              'pos': (1400.0, 100.0)},
-    'r': {   'class': 'pyctools.components.interp.resize.Resize',
-             'config': "{'xdown': 6}",
-             'pos': (950.0, 100.0)},
-    'r0': {   'class': 'pyctools.components.interp.resize.Resize',
-              'config': "{'ydown': 6}",
-              'pos': (1100.0, 100.0)},
+              'config': '{}',
+              'pos': (1310.0, 100.0)},
     'vfw': {   'class': 'pyctools.components.io.videofilewriter.VideoFileWriter',
-               'config': "{'path': 'video/still_wobble.avi'}",
-               'pos': (1250.0, 100.0)}}
+               'config': "{'path': "
+                         "'/home/jim/Documents/projects/pyctools-demo/video/still_wobble.avi'}",
+               'pos': (1190.0, 100.0)}}
     linkages = \
 {   ('d', 'output'): [('ifft', 'input')],
     ('fft', 'output'): [('fr', 'input')],
-    ('fg', 'output'): [('r', 'filter')],
-    ('fg0', 'output'): [('r0', 'filter')],
     ('fr', 'output'): [('d', 'input')],
-    ('ifft', 'output'): [('r', 'input')],
+    ('ifft', 'output'): [('ird', 'input')],
     ('ifr', 'output'): [('fft', 'input')],
+    ('ird', 'output'): [('vfw', 'input')],
     ('qd', 'output'): [('dm', 'input')],
-    ('r', 'output'): [('r0', 'input')],
-    ('r0', 'output'): [('vfw', 'input')],
     ('vfw', 'output'): [('qd', 'input')]}
 
     def make(self):
@@ -72,13 +63,14 @@ class Network(object):
         return Compound(linkages=self.linkages, **comps)
 
 if __name__ == '__main__':
-    from pyctools.core.qt import Qt, QtWidgets
-    QtWidgets.QApplication.setAttribute(Qt.AA_X11InitThreads)
+    from PyQt5 import QtCore, QtWidgets
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_X11InitThreads)
     app = QtWidgets.QApplication([])
 
     comp = Network().make()
     cnf = comp.get_config()
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     cnf.parser_add(parser)
     parser.add_argument('-v', '--verbose', action='count', default=0,
                         help='increase verbosity of log messages')
