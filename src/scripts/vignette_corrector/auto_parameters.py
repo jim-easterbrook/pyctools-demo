@@ -5,6 +5,7 @@ import argparse
 import logging
 from pyctools.core.compound import Compound
 import pyctools.components.colourspace.rgbtoy
+import pyctools.components.io.plotdata
 import pyctools.components.io.rawimagefilereader
 import pyctools.components.photo.vignettecorrector
 
@@ -13,6 +14,9 @@ class Network(object):
 {   'av': {   'class': 'pyctools.components.photo.vignettecorrector.AnalyseVignette',
               'config': "{'range': 'computer'}",
               'pos': (180.0, 300.0)},
+    'pd': {   'class': 'pyctools.components.io.plotdata.PlotData',
+              'config': '{}',
+              'pos': (320.0, 300.0)},
     'rgby': {   'class': 'pyctools.components.colourspace.rgbtoy.RGBtoY',
                 'config': "{'range': 'computer'}",
                 'pos': (50.0, 300.0)},
@@ -22,7 +26,8 @@ class Network(object):
                           "'brightness': 2.3}",
                 'pos': (-80.0, 300.0)}}
     linkages = \
-{   ('rgby', 'output'): [('av', 'input')],
+{   ('av', 'output'): [('pd', 'input')],
+    ('rgby', 'output'): [('av', 'input')],
     ('rifr', 'output'): [('rgby', 'input')]}
 
     def make(self):
@@ -32,6 +37,9 @@ class Network(object):
         return Compound(linkages=self.linkages, **comps)
 
 if __name__ == '__main__':
+    from PyQt5 import QtCore, QtWidgets
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_X11InitThreads)
+    app = QtWidgets.QApplication([])
 
     comp = Network().make()
     cnf = comp.get_config()
@@ -46,11 +54,7 @@ if __name__ == '__main__':
     cnf.parser_set(args)
     comp.set_config(cnf)
     comp.start()
-
-    try:
-        comp.join(end_comps=True)
-    except KeyboardInterrupt:
-        pass
+    app.exec_()
 
     comp.stop()
     comp.join()
