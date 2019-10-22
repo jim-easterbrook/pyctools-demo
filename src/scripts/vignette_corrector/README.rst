@@ -25,7 +25,7 @@ Open the configuration of the final ``Arithmetic()`` component (called ``contras
 
    ((data - 64) * 4) + 128
 
-Open the ``VignetteCorrector()`` configuration and set the ``r1``, ``r2`` and ``r3`` values to zero.
+Open the ``VignetteCorrector()`` configuration and set the ``r2``, ``r4`` and ``r6`` values to zero.
 Keep these configurations open as you will need to adjust them when running the script.
 
 When the script is run it should display a video window showing a contrast enhanced version of your grey image.
@@ -38,8 +38,13 @@ Automatic parameter setting
 
 Since writing the above I've written an ``AnalyseVignette`` component to automate the process.
 The ``auto_parameters.py`` shows how it's used.
-It prints the optimum settings of ``r1``, ``r2`` and ``r3`` for a plain grey image as used above.
+It prints the optimum settings of ``r2``, ``r4`` and ``r6`` for a plain grey image as used above.
 You may still want to run the manual process to check the settings visually.
+
+A more recent addition is ``auto_parameters_ref.py``.
+This uses a "reference" image, shot at the same time but with the smallest possible aperture.
+As the lens should not vignette at small apertures the sample image can be divided by the reference image to produce a vignette image that is unaffected by uneven illumination of your grey target.
+This is very useful with wide angle lenses.
 
 Using the vignette corrector
 ----------------------------
