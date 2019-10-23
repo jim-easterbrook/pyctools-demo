@@ -32,14 +32,14 @@ class Network(object):
                           "'/home/jim/Documents/projects/pyctools-demo/video/vignette.CR2', "
                           "'brightness': 2.3}",
                 'pos': (70.0, 300.0)},
-    'vc': {   'class': 'pyctools.components.photo.vignettecorrector.VignetteCorrector',
-              'config': "{'range': 'computer', 'r2': 0.17, 'r4': 0.12}",
-              'pos': (200.0, 300.0)}}
+    'vce': {   'class': 'pyctools.components.photo.vignettecorrector.VignetteCorrectorExp',
+               'config': "{'range': 'computer', 'a': 0.2798, 'b': 1.307}",
+               'pos': (200.0, 300.0)}}
     linkages = \
-{   ('efq', 'output'): [('id', 'input'), ('ifw', 'input')],
+{   ('efq', 'output'): [('ifw', 'input'), ('id', 'input')],
     ('gc', 'output'): [('efq', 'input')],
-    ('rifr', 'output'): [('vc', 'input')],
-    ('vc', 'output'): [('gc', 'input')]}
+    ('rifr', 'output'): [('vce', 'input')],
+    ('vce', 'output'): [('gc', 'input')]}
 
     def make(self):
         comps = {}

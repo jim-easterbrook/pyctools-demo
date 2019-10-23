@@ -11,9 +11,9 @@ import pyctools.components.photo.vignettecorrector
 
 class Network(object):
     components = \
-{   'av': {   'class': 'pyctools.components.photo.vignettecorrector.AnalyseVignette',
-              'config': "{'range': 'computer'}",
-              'pos': (180.0, 300.0)},
+{   'analyse': {   'class': 'pyctools.components.photo.vignettecorrector.AnalyseVignetteExp',
+                   'config': "{'range': 'computer'}",
+                   'pos': (190.0, 300.0)},
     'pd': {   'class': 'pyctools.components.io.plotdata.PlotData',
               'config': '{}',
               'pos': (320.0, 300.0)},
@@ -26,8 +26,8 @@ class Network(object):
                           "'brightness': 2.3}",
                 'pos': (-80.0, 300.0)}}
     linkages = \
-{   ('av', 'output'): [('pd', 'input')],
-    ('rgby', 'output'): [('av', 'input')],
+{   ('analyse', 'function'): [('pd', 'input')],
+    ('rgby', 'output'): [('analyse', 'input')],
     ('rifr', 'output'): [('rgby', 'input')]}
 
     def make(self):

@@ -12,8 +12,8 @@ import pyctools.components.photo.vignettecorrector
 
 class Network(object):
     components = \
-{   'analyse': {   'class': 'pyctools.components.photo.vignettecorrector.AnalyseVignette',
-                   'config': '{}',
+{   'analyse': {   'class': 'pyctools.components.photo.vignettecorrector.AnalyseVignetteExp',
+                   'config': "{'range': 'computer'}",
                    'pos': (330.0, 430.0)},
     'divide': {   'class': 'pyctools.components.arithmetic.Arithmetic2',
                   'config': "{'func': 'pt_float(128) * data1 / data2'}",
