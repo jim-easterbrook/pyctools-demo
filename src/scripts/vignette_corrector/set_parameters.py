@@ -3,6 +3,10 @@
 
 import argparse
 import logging
+import sys
+
+from PyQt5 import QtCore, QtWidgets
+
 from pyctools.core.compound import Compound
 import pyctools.components.arithmetic
 import pyctools.components.colourspace.rgbtoy
@@ -16,7 +20,7 @@ import pyctools.components.qt.qtdisplay
 class Network(object):
     components = \
 {   'contrast': {   'class': 'pyctools.components.arithmetic.Arithmetic',
-                    'config': "{'func': '((data - 50) * 64) + 128'}",
+                    'config': "{'func': '((data - 15) * 16) + 128'}",
                     'pos': (830.0, 300.0)},
     'fg': {   'class': 'pyctools.components.interp.filtergenerator.FilterGenerator',
               'config': "{'xdown': 5, 'xaperture': 16, 'ydown': 5, "
@@ -35,29 +39,29 @@ class Network(object):
              'config': "{'xdown': 5, 'ydown': 5}",
              'pos': (180.0, 300.0)},
     'rgby': {   'class': 'pyctools.components.colourspace.rgbtoy.RGBtoY',
-                'config': "{'range': 'computer'}",
+                'config': "{'matrix': '709'}",
                 'pos': (50.0, 300.0)},
     'rifr': {   'class': 'pyctools.components.io.rawimagefilereader.RawImageFileReader',
                 'config': "{'path': "
                           "'/home/jim/Documents/projects/pyctools-demo/video/grey.CR2', "
-                          "'brightness': 2.3}",
+                          "'brightness': 2.3, 'highlight_mode': 'ignore'}",
                 'pos': (-80.0, 300.0)},
     'tb_average': {   'class': 'pyctools.components.arithmetic.Arithmetic',
                       'config': "{'func': '(data + data[-1::-1,::,::])/2.0'}",
                       'pos': (440.0, 300.0)},
-    'vc': {   'class': 'pyctools.components.photo.vignettecorrector.VignetteCorrector',
-              'config': "{'range': 'computer', 'r2': 0.17, 'r4': 0.12}",
-              'pos': (700.0, 300.0)}}
+    'vce': {   'class': 'pyctools.components.photo.vignettecorrector.VignetteCorrectorExp',
+               'config': "{'mode': 'poly2', 'param_0': 0.6, 'param_1': -0.3}",
+               'pos': (700.0, 300.0)}}
     linkages = \
 {   ('contrast', 'output'): [('qd', 'input')],
     ('fg', 'output'): [('r', 'filter')],
-    ('fr', 'output'): [('vc', 'input')],
+    ('fr', 'output'): [('vce', 'input')],
     ('lr_average', 'output'): [('tb_average', 'input')],
     ('r', 'output'): [('lr_average', 'input')],
     ('rgby', 'output'): [('r', 'input')],
     ('rifr', 'output'): [('rgby', 'input')],
     ('tb_average', 'output'): [('fr', 'input')],
-    ('vc', 'output'): [('contrast', 'input')]}
+    ('vce', 'output'): [('contrast', 'input')]}
 
     def make(self):
         comps = {}
@@ -66,9 +70,8 @@ class Network(object):
         return Compound(linkages=self.linkages, **comps)
 
 if __name__ == '__main__':
-    from PyQt5 import QtCore, QtWidgets
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_X11InitThreads)
-    app = QtWidgets.QApplication([])
+    app = QtWidgets.QApplication(sys.argv)
 
     comp = Network().make()
     cnf = comp.get_config()

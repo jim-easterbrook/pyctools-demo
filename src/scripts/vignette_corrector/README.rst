@@ -25,20 +25,22 @@ Open the configuration of the final ``Arithmetic()`` component (called ``contras
 
    ((data - 64) * 4) + 128
 
-Open the ``VignetteCorrector()`` configuration and set the ``r2``, ``r4`` and ``r6`` values to zero.
+Open the ``VignetteCorrectorExp()`` configuration and set the ``param_0``, ``param_1`` and ``param_2`` values to zero.
+The ``mode`` setting allows you to choose different mathematical functions to match to the vignetting.
 Keep these configurations open as you will need to adjust them when running the script.
 
 When the script is run it should display a video window showing a contrast enhanced version of your grey image.
 You may need to adjust the amount subtracted in the ``Arithmetic()`` component (initially 64) if this grey is too dark or too light.
-Now you can adjust the ``VignetteCorrector()`` parameters to produce an even brightness grey image.
+Now you can adjust the ``VignetteCorrectorExp()`` parameters to produce an even brightness grey image.
 As you get closer to the correct settings you can increase the multiplier (initially 4) to enhance the contrast even more.
 
 Automatic parameter setting
 ---------------------------
 
-Since writing the above I've written an ``AnalyseVignette`` component to automate the process.
+Since writing the above I've written an ``AnalyseVignetteExp`` component to automate the process.
 The ``auto_parameters.py`` shows how it's used.
-It prints the optimum settings of ``r2``, ``r4`` and ``r6`` for a plain grey image as used above.
+It prints the optimum settings of ``param_0``, ``param_1`` and ``param_2`` for a plain grey image as used above.
+You can try different ``mode`` settings to see which mathematical function best matches your lens.
 You may still want to run the manual process to check the settings visually.
 
 A more recent addition is ``auto_parameters_ref.py``.
