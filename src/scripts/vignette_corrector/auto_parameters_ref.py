@@ -13,7 +13,7 @@ import pyctools.components.photo.vignettecorrector
 class Network(object):
     components = \
 {   'analyse': {   'class': 'pyctools.components.photo.vignettecorrector.AnalyseVignetteExp',
-                   'config': "{'range': 'computer'}",
+                   'config': "{'mode': 'power'}",
                    'pos': (330.0, 430.0)},
     'divide': {   'class': 'pyctools.components.arithmetic.Arithmetic2',
                   'config': "{'func': 'pt_float(128) * data1 / data2'}",
@@ -21,7 +21,7 @@ class Network(object):
     'input': {   'class': 'pyctools.components.io.rawimagefilereader.RawImageFileReader',
                  'config': "{'path': "
                            "'/home/jim/Pictures/from_camera/2019/2019_10_22/100D_IMG_5869.CR2', "
-                           "'brightness': 2.3}",
+                           "'brightness': 2.0, 'highlight_mode': 'ignore'}",
                  'pos': (-90.0, 380.0)},
     'plot': {   'class': 'pyctools.components.io.plotdata.PlotData',
                 'config': '{}',
@@ -29,13 +29,13 @@ class Network(object):
     'reference': {   'class': 'pyctools.components.io.rawimagefilereader.RawImageFileReader',
                      'config': "{'path': "
                                "'/home/jim/Pictures/from_camera/2019/2019_10_22/100D_IMG_5876.CR2', "
-                               "'brightness': 2.3}",
+                               "'brightness': 2.0, 'highlight_mode': 'ignore'}",
                      'pos': (-90.0, 500.0)},
     'rgby_in': {   'class': 'pyctools.components.colourspace.rgbtoy.RGBtoY',
-                   'config': "{'matrix': '709', 'range': 'computer'}",
+                   'config': "{'matrix': '709'}",
                    'pos': (50.0, 380.0)},
     'rgby_ref': {   'class': 'pyctools.components.colourspace.rgbtoy.RGBtoY',
-                    'config': "{'matrix': '709', 'range': 'computer'}",
+                    'config': "{'matrix': '709'}",
                     'pos': (50.0, 500.0)}}
     linkages = \
 {   ('analyse', 'function'): [('plot', 'input')],

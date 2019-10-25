@@ -3,9 +3,11 @@
 
 import argparse
 import logging
+
 from pyctools.core.compound import Compound
 import pyctools.components.colourspace.gammacorrection
 import pyctools.components.colourspace.quantise
+import pyctools.components.io.dumpmetadata
 import pyctools.components.io.imagedisplay
 import pyctools.components.io.imagefilepil
 import pyctools.components.io.rawimagefilereader
@@ -13,11 +15,14 @@ import pyctools.components.photo.vignettecorrector
 
 class Network(object):
     components = \
-{   'efq': {   'class': 'pyctools.components.colourspace.quantise.ErrorFeedbackQuantise',
+{   'dm': {   'class': 'pyctools.components.io.dumpmetadata.DumpMetadata',
+              'config': '{}',
+              'pos': (590.0, 180.0)},
+    'efq': {   'class': 'pyctools.components.colourspace.quantise.ErrorFeedbackQuantise',
                'config': '{}',
                'pos': (460.0, 300.0)},
     'gc': {   'class': 'pyctools.components.colourspace.gammacorrection.GammaCorrect',
-              'config': "{'range': 'computer', 'gamma': 'srgb'}",
+              'config': "{'gamma': 'srgb'}",
               'pos': (330.0, 300.0)},
     'id': {   'class': 'pyctools.components.io.imagedisplay.ImageDisplay',
               'config': '{}',
@@ -33,10 +38,10 @@ class Network(object):
                           "'brightness': 2.3}",
                 'pos': (70.0, 300.0)},
     'vce': {   'class': 'pyctools.components.photo.vignettecorrector.VignetteCorrectorExp',
-               'config': "{'range': 'computer', 'a': 0.2798, 'b': 1.307}",
+               'config': "{'param_0': 0.46329, 'param_1': 1.3789}",
                'pos': (200.0, 300.0)}}
     linkages = \
-{   ('efq', 'output'): [('ifw', 'input'), ('id', 'input')],
+{   ('efq', 'output'): [('dm', 'input'), ('ifw', 'input'), ('id', 'input')],
     ('gc', 'output'): [('efq', 'input')],
     ('rifr', 'output'): [('vce', 'input')],
     ('vce', 'output'): [('gc', 'input')]}

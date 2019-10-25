@@ -3,6 +3,10 @@
 
 import argparse
 import logging
+import sys
+
+from PyQt5 import QtCore, QtWidgets
+
 from pyctools.core.compound import Compound
 import pyctools.components.colourspace.rgbtoy
 import pyctools.components.io.plotdata
@@ -12,18 +16,18 @@ import pyctools.components.photo.vignettecorrector
 class Network(object):
     components = \
 {   'analyse': {   'class': 'pyctools.components.photo.vignettecorrector.AnalyseVignetteExp',
-                   'config': "{'range': 'computer'}",
+                   'config': "{'mode': 'power'}",
                    'pos': (190.0, 300.0)},
     'pd': {   'class': 'pyctools.components.io.plotdata.PlotData',
               'config': '{}',
               'pos': (320.0, 300.0)},
     'rgby': {   'class': 'pyctools.components.colourspace.rgbtoy.RGBtoY',
-                'config': "{'range': 'computer'}",
+                'config': '{}',
                 'pos': (50.0, 300.0)},
     'rifr': {   'class': 'pyctools.components.io.rawimagefilereader.RawImageFileReader',
                 'config': "{'path': "
-                          "'/home/jim/Documents/projects/pyctools-demo/video/grey.CR2', "
-                          "'brightness': 2.3}",
+                          "'/home/jim/Pictures/from_camera/2019/2019_10_23/100D_IMG_5909.CR2', "
+                          "'brightness': 2.0, 'highlight_mode': 'ignore'}",
                 'pos': (-80.0, 300.0)}}
     linkages = \
 {   ('analyse', 'function'): [('pd', 'input')],
@@ -37,9 +41,8 @@ class Network(object):
         return Compound(linkages=self.linkages, **comps)
 
 if __name__ == '__main__':
-    from PyQt5 import QtCore, QtWidgets
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_X11InitThreads)
-    app = QtWidgets.QApplication([])
+    app = QtWidgets.QApplication(sys.argv)
 
     comp = Network().make()
     cnf = comp.get_config()
