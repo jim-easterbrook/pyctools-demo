@@ -3,6 +3,10 @@
 
 import argparse
 import logging
+import sys
+
+from PyQt5 import QtCore, QtWidgets
+
 from pyctools.core.compound import Compound
 import pyctools.components.arithmetic
 import pyctools.components.colourspace.rgbtoy
@@ -12,7 +16,7 @@ import pyctools.components.photo.vignettecorrector
 
 class Network(object):
     components = \
-{   'analyse': {   'class': 'pyctools.components.photo.vignettecorrector.AnalyseVignetteExp',
+{   'analyse': {   'class': 'pyctools.components.photo.vignettecorrector.AnalyseVignette',
                    'config': "{'mode': 'power'}",
                    'pos': (330.0, 430.0)},
     'divide': {   'class': 'pyctools.components.arithmetic.Arithmetic2',
@@ -52,9 +56,8 @@ class Network(object):
         return Compound(linkages=self.linkages, **comps)
 
 if __name__ == '__main__':
-    from PyQt5 import QtCore, QtWidgets
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_X11InitThreads)
-    app = QtWidgets.QApplication([])
+    app = QtWidgets.QApplication(sys.argv)
 
     comp = Network().make()
     cnf = comp.get_config()

@@ -49,19 +49,19 @@ class Network(object):
     'tb_average': {   'class': 'pyctools.components.arithmetic.Arithmetic',
                       'config': "{'func': '(data + data[-1::-1,::,::])/2.0'}",
                       'pos': (440.0, 300.0)},
-    'vce': {   'class': 'pyctools.components.photo.vignettecorrector.VignetteCorrectorExp',
-               'config': "{'mode': 'poly2', 'param_0': 0.6, 'param_1': -0.3}",
-               'pos': (700.0, 300.0)}}
+    'vc': {   'class': 'pyctools.components.photo.vignettecorrector.VignetteCorrector',
+              'config': "{'mode': 'poly2', 'param_0': 0.6, 'param_1': -0.3}",
+              'pos': (700.0, 300.0)}}
     linkages = \
 {   ('contrast', 'output'): [('qd', 'input')],
     ('fg', 'output'): [('r', 'filter')],
-    ('fr', 'output'): [('vce', 'input')],
+    ('fr', 'output'): [('vc', 'input')],
     ('lr_average', 'output'): [('tb_average', 'input')],
     ('r', 'output'): [('lr_average', 'input')],
     ('rgby', 'output'): [('r', 'input')],
     ('rifr', 'output'): [('rgby', 'input')],
     ('tb_average', 'output'): [('fr', 'input')],
-    ('vce', 'output'): [('contrast', 'input')]}
+    ('vc', 'output'): [('contrast', 'input')]}
 
     def make(self):
         comps = {}

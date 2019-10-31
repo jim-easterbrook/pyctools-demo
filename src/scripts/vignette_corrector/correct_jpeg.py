@@ -38,15 +38,15 @@ class Network(object):
                          "'/home/jim/Documents/projects/pyctools-demo/video/vignette_corr.jpg', "
                          '\'options\': \'"quality":95\'}',
                'pos': (570.0, 300.0)},
-    'vce': {   'class': 'pyctools.components.photo.vignettecorrector.VignetteCorrectorExp',
-               'config': "{'param_0': 0.463292, 'param_1': 1.37891}",
-               'pos': (180.0, 300.0)}}
+    'vc': {   'class': 'pyctools.components.photo.vignettecorrector.VignetteCorrector',
+              'config': "{'param_0': 0.463292, 'param_1': 1.37891}",
+              'pos': (180.0, 300.0)}}
     linkages = \
-{   ('efq', 'output'): [('dm', 'input'), ('ifw', 'input'), ('id', 'input')],
+{   ('efq', 'output'): [('id', 'input'), ('ifw', 'input'), ('dm', 'input')],
     ('gc', 'output'): [('efq', 'input')],
-    ('gc0', 'output'): [('vce', 'input')],
+    ('gc0', 'output'): [('vc', 'input')],
     ('ifr', 'output'): [('gc0', 'input')],
-    ('vce', 'output'): [('gc', 'input')]}
+    ('vc', 'output'): [('gc', 'input')]}
 
     def make(self):
         comps = {}

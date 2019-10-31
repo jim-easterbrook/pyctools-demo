@@ -15,7 +15,7 @@ import pyctools.components.photo.vignettecorrector
 
 class Network(object):
     components = \
-{   'analyse': {   'class': 'pyctools.components.photo.vignettecorrector.AnalyseVignetteExp',
+{   'analyse': {   'class': 'pyctools.components.photo.vignettecorrector.AnalyseVignette',
                    'config': "{'mode': 'power'}",
                    'pos': (190.0, 300.0)},
     'pd': {   'class': 'pyctools.components.io.plotdata.PlotData',
