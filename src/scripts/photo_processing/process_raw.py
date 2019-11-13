@@ -270,10 +270,10 @@ def main():
         comps = {
             'reader': RawImageFileReader2(
                 path=in_file, highlight_mode='Blend',
-                demosaic_algorithm='DCB', dcb_iterations=1, dcb_enhance=True,
-                noise_thr=200, fbdd_noise_reduction='Full', **ca_params),
+                demosaic_algorithm='DCB', dcb_iterations=0, dcb_enhance=False,
+                noise_thr=200, fbdd_noise_reduction='Off', **ca_params),
             'rgbtoyuv': RGBtoYUV(matrix='709'),
-            'sharpen': UnsharpMask(amount=0.4, radius=2.5, threshold=1.0),
+            'sharpen': UnsharpMask(amount=0.5, radius=2.5, threshold=1.0),
             'saturation': Arithmetic(func='data * pt_float(1.2)'),
             'yuvtorgb': YUVtoRGB(matrix='709'),
             'gamma': GammaCorrect(
@@ -286,8 +286,6 @@ def main():
             comps['reader'].set_config({'noise_thr': 800})
         elif iso >= 800:
             comps['reader'].set_config({'noise_thr': 400})
-        if lens == 'Samyang_500':
-            comps['sharpen'].set_config({'amount': 0.5})
         if args.exposure:
             comps['reader'].set_config({'exp_shift': 2 ** args.exposure})
         linkages = {
