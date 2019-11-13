@@ -275,10 +275,11 @@ def main():
                 demosaic_algorithm='DCB', dcb_iterations=0, dcb_enhance=False,
                 noise_thr=200, fbdd_noise_reduction='Off', **ca_params),
             'rgbtoyuv': RGBtoYUV(matrix='709'),
-            'sharpen': UnsharpMask(amount=0.5, radius=2.5, threshold=1.0),
+            'sharpen': UnsharpMask(amount=0.3, radius=2.5, threshold=1.0),
             'yuvtorgb': YUVtoRGB(matrix='709'),
             'gamma': GammaCorrect(
-                gamma='hybrid_log', black=1.5, white=120, scale=5),
+                gamma='hybrid_log', black=1.5,
+                white=100.0 / (2 ** args.exposure), scale=5),
             'quantise': ErrorFeedbackQuantise(),
             'writer': ImageFileWriterPIL(
                 path=out_file, options='"quality":95', set_thumbnail=True),
@@ -287,8 +288,8 @@ def main():
             comps['reader'].set_config({'noise_thr': 800})
         elif iso >= 800:
             comps['reader'].set_config({'noise_thr': 400})
-        if args.exposure:
-            comps['reader'].set_config({'exp_shift': 2 ** args.exposure})
+        if lens == 'Samyang_500':
+            comps['sharpen'].set_config({'amount': 0.5})
         linkages = {
             ('reader',     'output'):    [('rgbtoyuv', 'input')],
             ('rgbtoyuv',   'output_Y'):  [('sharpen',  'input')],
