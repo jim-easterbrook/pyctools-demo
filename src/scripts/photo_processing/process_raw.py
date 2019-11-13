@@ -220,6 +220,8 @@ def main():
                         help='plot histogram of output')
     parser.add_argument('-e', '--exposure', default=0, type=float, metavar='x',
                         help='adjust exposure by x stops')
+    parser.add_argument('-c', '--colour', default=1.0, type=float, metavar='x',
+                        help='multiply colour by x')
     parser.add_argument('-s', '--sharpen', nargs=3, type=float,
                         metavar=('a', 'r', 't'),
                         help='sharpen with amount a, radius r, threshold t')
@@ -274,7 +276,6 @@ def main():
                 noise_thr=200, fbdd_noise_reduction='Off', **ca_params),
             'rgbtoyuv': RGBtoYUV(matrix='709'),
             'sharpen': UnsharpMask(amount=0.5, radius=2.5, threshold=1.0),
-            'saturation': Arithmetic(func='data * pt_float(1.2)'),
             'yuvtorgb': YUVtoRGB(matrix='709'),
             'gamma': GammaCorrect(
                 gamma='hybrid_log', black=1.5, white=120, scale=5),
@@ -289,15 +290,14 @@ def main():
         if args.exposure:
             comps['reader'].set_config({'exp_shift': 2 ** args.exposure})
         linkages = {
-            ('reader',     'output'):    [('rgbtoyuv',   'input')],
-            ('rgbtoyuv',   'output_Y'):  [('sharpen',    'input')],
-            ('rgbtoyuv',   'output_UV'): [('saturation', 'input')],
-            ('sharpen',    'output'):    [('yuvtorgb',   'input_Y')],
-            ('saturation', 'output'):    [('yuvtorgb',   'input_UV')],
-            ('yuvtorgb',   'output'):    [('gamma',      'input')],
-            ('gamma',      'output'):    [('quantise',   'input')],
-            ('quantise',   'output'):    [('writer',     'input'),
-                                          ('self',       'output')],
+            ('reader',     'output'):    [('rgbtoyuv', 'input')],
+            ('rgbtoyuv',   'output_Y'):  [('sharpen',  'input')],
+            ('rgbtoyuv',   'output_UV'): [('yuvtorgb', 'input_UV')],
+            ('sharpen',    'output'):    [('yuvtorgb', 'input_Y')],
+            ('yuvtorgb',   'output'):    [('gamma',    'input')],
+            ('gamma',      'output'):    [('quantise', 'input')],
+            ('quantise',   'output'):    [('writer',   'input'),
+                                          ('self',     'output')],
             }
         vignette_params = get_vignette_params(lens, aperture, focal_length)
         if vignette_params:
@@ -311,6 +311,11 @@ def main():
         if args.histogram:
             comps['histogram'] = ShowHistogram()
             linkages[('gamma', 'output')].append(('histogram', 'input'))
+        if args.colour != 1.0:
+            comps['colour'] = Arithmetic(
+                func='data * pt_float({})'.format(args.colour))
+            linkages[('colour', 'output')] = linkages[('rgbtoyuv', 'output_UV')]
+            linkages[('rgbtoyuv', 'output_UV')] = [('colour', 'input')]
         if args.sharpen:
             a, r, t = args.sharpen
             comps['sharpen2'] = UnsharpMask(
