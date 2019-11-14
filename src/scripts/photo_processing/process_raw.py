@@ -220,7 +220,9 @@ def main():
                         help='plot histogram of output')
     parser.add_argument('-e', '--exposure', default=0, type=float, metavar='x',
                         help='adjust exposure by x stops')
-    parser.add_argument('-c', '--colour', default=1.0, type=float, metavar='x',
+    parser.add_argument('-o', '--offset', default=1.7, type=float, metavar='x',
+                        help='offset black level by x')
+    parser.add_argument('-c', '--colour', default=1.07, type=float, metavar='x',
                         help='multiply colour by x')
     parser.add_argument('-s', '--sharpen', nargs=3, type=float,
                         metavar=('a', 'r', 't'),
@@ -278,8 +280,8 @@ def main():
             'sharpen': UnsharpMask(amount=0.3, radius=2.5, threshold=1.0),
             'yuvtorgb': YUVtoRGB(matrix='709'),
             'gamma': GammaCorrect(
-                gamma='hybrid_log', black=1.5,
-                white=100.0 / (2 ** args.exposure), scale=5),
+                gamma='hybrid_log', scale=5,
+                black=args.offset, white=100.0 / (2 ** args.exposure)),
             'quantise': ErrorFeedbackQuantise(),
             'writer': ImageFileWriterPIL(
                 path=out_file, options='"quality":95', set_thumbnail=True),
