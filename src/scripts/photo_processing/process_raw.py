@@ -354,9 +354,20 @@ def main():
             md.set_tag_string(
                 'Xmp.xmp.ModifyDate', now.strftime('%Y-%m-%dT%H:%M:%S') +
                 sign + '{:02d}:{:02d}'.format(tz_offset // 60, tz_offset % 60))
+            # set audit trail
+            audit = md.get_tag_string('Xmp.pyctools.audit')
+            audit += '{} = process_raw({})\n'.format(
+                os.path.basename(out_file), os.path.basename(in_file))
+            params = []
+            for key, value in vars(args).items():
+                if key not in ('audit', 'file', 'gamma', 'histogram'):
+                    params.append('{}: {}'.format(key, value))
+            if params:
+                audit += '    ' + ', '.join(params) + '\n'
+            md.set_tag_string('Xmp.pyctools.audit', audit)
             md.save_file(out_file)
             if args.audit:
-                print(md.get_tag_string('Xmp.pyctools.audit'))
+                print(audit)
 
 
 if __name__ == '__main__':
