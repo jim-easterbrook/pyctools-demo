@@ -224,6 +224,8 @@ def main():
                         help='offset black level by x')
     parser.add_argument('-c', '--colour', default=1.07, type=float, metavar='x',
                         help='multiply colour by x')
+    parser.add_argument('-n', '--noise', default=0, type=float, metavar='x',
+                        help='set wavelet denoising threshold to x')
     parser.add_argument('-s', '--sharpen', nargs=3, type=float,
                         metavar=('a', 'r', 't'),
                         help='sharpen with amount a, radius r, threshold t')
@@ -256,7 +258,6 @@ def main():
         lens = md.get_tag_string('Exif.Photo.LensModel')
         aperture = md.get_fnumber()
         focal_length = md.get_focal_length()
-        iso = md.get_iso_speed()
         if '10-18' in lens:
             lens = 'Canon_10_18'
         elif '18-55' in lens:
@@ -275,7 +276,7 @@ def main():
             'reader': RawImageFileReader2(
                 path=in_file, highlight_mode='Blend',
                 demosaic_algorithm='DCB', dcb_iterations=0, dcb_enhance=False,
-                noise_thr=200, fbdd_noise_reduction='Off', **ca_params),
+                fbdd_noise_reduction='Off', **ca_params),
             'rgbtoyuv': RGBtoYUV(matrix='709'),
             'sharpen': UnsharpMask(amount=0.3, radius=2.5, threshold=1.0),
             'yuvtorgb': YUVtoRGB(matrix='709'),
@@ -286,10 +287,8 @@ def main():
             'writer': ImageFileWriterPIL(
                 path=out_file, options='"quality":95', set_thumbnail=True),
             }
-        if iso >= 6400:
-            comps['reader'].set_config({'noise_thr': 800})
-        elif iso >= 800:
-            comps['reader'].set_config({'noise_thr': 400})
+        if args.noise:
+            comps['reader'].set_config({'noise_thr': args.noise})
         if lens == 'Samyang_500':
             comps['sharpen'].set_config({'amount': 0.5})
         linkages = {
