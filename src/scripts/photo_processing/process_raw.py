@@ -218,6 +218,8 @@ def main():
                         help='plot gamma correction curve')
     parser.add_argument('--histogram', action='store_true',
                         help='plot histogram of output')
+    parser.add_argument('--astro', action='store_true',
+                        help='set defaults for astrophotography')
     parser.add_argument('-e', '--exposure', default=0, type=float, metavar='x',
                         help='adjust exposure by x stops')
     parser.add_argument('-o', '--offset', default=1.7, type=float, metavar='x',
@@ -287,6 +289,9 @@ def main():
             'writer': ImageFileWriterPIL(
                 path=out_file, options='"quality":95', set_thumbnail=True),
             }
+        if args.astro:
+            comps['reader'].set_config({
+                'fbdd_noise_reduction': 'Full', 'noise_thr': 300})
         if args.noise:
             comps['reader'].set_config({'noise_thr': args.noise})
         if lens == 'Samyang_500':
