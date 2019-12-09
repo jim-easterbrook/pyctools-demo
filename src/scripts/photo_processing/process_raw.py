@@ -35,6 +35,8 @@ chromatic_aberration_data = {
                      (46, 1.00010, 1.00030),
                      (55, 0.99995, 1.00040)),
     'Samyang_500':  ((500, 1.00035, 0.99970),),
+    'Sigma_18_200': (( 18, 1.00000, 1.00000),
+                     (200, 1.00000, 1.00000)),
     'Sigma_70_300': (( 70, 1.00000, 1.00030),
                      ( 81, 1.00000, 1.00025),
                      (100, 1.00000, 1.00025),
@@ -142,6 +144,94 @@ vignette_data = {
     'Samyang_500': {
         '6.3': ((500, 0.41, 2.1),),
         },
+    'Sigma_18_200': {
+        '3.5':  ((18,  0.191603, 0.845672, 1.017831, 1.171789, 1.457623),
+                 ),
+        '4.0':  ((18,  0.443971, 0.876140, 1.001543, 1.083026, 1.257010),
+                 (21,  0.144785, 0.951488, 1.008929, 1.182630, 1.363204),
+                 (28,  0.143489, 0.930867, 1.010137, 1.168593, 1.492611),
+                 ),
+        '4.5':  ((18,  0.789118, 0.933520, 1.003268, 1.015749, 1.070867),
+                 (21,  0.631484, 0.969139, 0.999105, 1.043597, 1.129712),
+                 (28,  0.400068, 0.942782, 1.000226, 1.092102, 1.348511),
+                 (33,  0.130422, 0.912872, 1.008586, 1.152600, 1.491283),
+                 (39,  0.128040, 0.906847, 1.008555, 1.141092, 1.493164),
+                 ),
+        '5.0':  ((21,  0.565203, 0.917650, 0.998812, 1.001913, 1.034889),
+                 (28,  0.665542, 0.948856, 1.000224, 1.035675, 1.203327),
+                 (33,  0.501765, 0.917822, 1.000765, 1.059703, 1.279012),
+                 (39,  0.468142, 0.921721, 1.000390, 1.064255, 1.330766),
+                 (54,  0.146395, 0.890679, 1.012981, 1.132420, 1.490866),
+                 ),
+        '5.6':  ((28,  0.702983, 0.953627, 1.000360, 0.999064, 1.094250),
+                 (33,  0.710998, 0.949483, 1.000276, 1.003730, 1.137054),
+                 (39,  0.526643, 0.932154, 0.999183, 1.002507, 1.149823),
+                 (54,  0.481320, 0.896403, 1.001508, 1.051237, 1.301956),
+                 (63,  0.164298, 0.870664, 1.014279, 1.120954, 1.501688),
+                 (75,  0.186024, 0.828426, 1.016072, 1.106186, 1.546209),
+                 (89,  0.168677, 0.793698, 1.013101, 1.097132, 1.560497),
+                 (106, 0.165923, 0.752453, 1.011879, 1.088029, 1.608575),
+                 ),
+        '6.3':  ((28,              0.969905,           1.000244, 1.054224),
+                 (33,              0.954609,           1.000201, 1.070933),
+                 (39,              0.949951,           1.000318, 1.094866),
+                 (54,              0.929109,           1.001772, 1.154334),
+                 (63,              0.907095,           1.002624, 1.201798),
+                 (74.9,            0.834156,           1.013815, 1.314239),
+                 (75,    0.603583, 0.852843, 1.001311, 1.024207, 1.325848),
+                 (89,    0.566313, 0.827677, 1.001341, 1.030145, 1.373551),
+                 (106,   0.583750, 0.790051, 1.001215, 1.023179, 1.404825),
+                 (106.1,           0.771598,           1.011404, 1.398856),
+                 (125,             0.685060,           1.079280, 1.669043),
+                 (147,             0.640434,           1.073432, 1.699695),
+                 (170,             0.579095,           1.065622, 1.729200),
+                 (200,             0.485247,           1.052013, 1.761800),
+                 ),
+        '7.1':  ((33,  0.967743, 1.000268, 1.064282),
+                 (39,  0.965409, 1.001255, 1.072426),
+                 (54,  0.942104, 1.001598, 1.132279),
+                 (63,  0.925490, 1.002437, 1.153277),
+                 (75,  0.887689, 1.001633, 1.205474),
+                 (89,  0.861494, 1.003008, 1.252228),
+                 (106, 0.824758, 1.002067, 1.280511),
+                 (125, 0.729560, 1.003595, 1.412241),
+                 (147, 0.692354, 1.002285, 1.430388),
+                 (170, 0.647526, 1.002900, 1.452442),
+                 (200, 0.582503, 1.004591, 1.475844),
+                 ),
+        '8.0':  ((54,  0.963181, 0.999742, 1.073697),
+                 (63,  0.946707, 1.001932, 1.089412),
+                 (75,  0.921257, 1.001869, 1.143048),
+                 (89,  0.887852, 1.001727, 1.185566),
+                 (106, 0.853453, 1.000834, 1.212885),
+                 (125, 0.807640, 1.001396, 1.265480),
+                 (147, 0.781950, 1.001770, 1.282772),
+                 (170, 0.744447, 1.001926, 1.295934),
+                 (200, 0.690925, 1.001013, 1.305138),
+                 ),
+        '9.0':  ((75,  0.941405, 1.001198, 1.095137),
+                 (89,  0.914626, 1.000970, 1.106548),
+                 (106, 0.904861, 1.001182, 1.139048),
+                 (125, 0.865721, 1.001100, 1.182148),
+                 (147, 0.844578, 1.001216, 1.196191),
+                 (170, 0.814092, 1.000830, 1.204672),
+                 (200, 0.782583, 1.001330, 1.214902),
+                 ),
+        '10.0': ((75,  0.949186, 1.000735, 1.050847),
+                 (89,  0.931576, 1.000657, 1.073926),
+                 (106, 0.925395, 1.001075, 1.099613),
+                 (125, 0.875100, 1.000138, 1.146153),
+                 (147, 0.864363, 1.001026, 1.165457),
+                 (170, 0.843018, 1.001218, 1.175854),
+                 (200, 0.808864, 1.000189, 1.179866),
+                 ),
+        '11.0': ((106, 0.946136, 1.000759, 1.057715),
+                 (125, 0.914910, 0.999754, 1.076507),
+                 (147, 0.909922, 1.000104, 1.092782),
+                 (170, 0.901233, 1.001085, 1.101896),
+                 (200, 0.875118, 1.000025, 1.100532),
+                 ),
+        },
     'Sigma_70_300': {
         '4.0': ((70, 0.29678948434660857, 1.9096306007517116),
                 (81, 0.2961031690256165, 1.8928014922495042),
@@ -193,20 +283,33 @@ def get_vignette_params(lens, aperture, focal_length):
         lo -= 1
         if lo < 0:
             return None
-    if data_points[lo][1] is None or data_points[hi][1] is None:
+    lo = list(data_points[lo])
+    hi = list(data_points[hi])
+    if lo[1] is None or hi[1] is None:
         return None
+    if lens != 'Sigma_18_200':
+        result = {'mode': 'power'}
+    elif len(lo) >= 6:
+        result = {'mode': 'invlin3'}
+    else:
+        result = {'mode': 'invlin2'}
     if lo == hi:
-        return {'param_0': data_points[lo][1],
-                'param_1': data_points[lo][2]}
-    alpha = ((data_points[hi][0] - focal_length) /
-             (data_points[hi][0] - data_points[lo][0]))
-    beta = 1.0 - alpha
-    p0_lo = data_points[lo][1]
-    p0_hi = data_points[hi][1]
-    p1_lo = data_points[lo][2]
-    p1_hi = data_points[hi][2]
-    return {'param_0': (p0_lo * alpha) + (p0_hi * beta),
-            'param_1': p1_lo * p1_hi / ((p1_hi * alpha) + (p1_lo * beta))}
+        interp = lo
+    else:
+        alpha = (hi[0] - focal_length) / (hi[0] - lo[0])
+        beta = 1.0 - alpha
+        if result['mode'] == 'power':
+            # interpolate inverse of 2nd param
+            lo[2] = 1.0 / lo[2]
+            hi[2] = 1.0 / hi[2]
+        interp = []
+        for a, b in zip(lo, hi):
+            interp.append((a * alpha) + (b * beta))
+        if result['mode'] == 'power':
+            interp[2] = 1.0 / interp[2]
+    for n, param in enumerate(interp[1:]):
+        result['param_{}'.format(n)] = param
+    return result
 
 
 def main():
@@ -218,6 +321,8 @@ def main():
                         help='plot gamma correction curve')
     parser.add_argument('--histogram', action='store_true',
                         help='plot histogram of output')
+    parser.add_argument('-l', '--linear', action='store_true',
+                        help='save "linear light" (not gamma corrected) image')
     parser.add_argument('--astro', action='store_true',
                         help='set defaults for astrophotography')
     parser.add_argument('-e', '--exposure', default=0, type=float, metavar='x',
@@ -264,6 +369,8 @@ def main():
             lens = 'Canon_10_18'
         elif '18-55' in lens:
             lens = 'Canon_18_55'
+        elif '18-200' in lens:
+            lens = 'Sigma_18_200'
         elif '70-300' in lens:
             lens = 'Sigma_70_300'
         elif '50' in lens:
@@ -271,7 +378,7 @@ def main():
             aperture = 6.3
             focal_length = 500
         else:
-            print('Skip lens', md.lens_model)
+            print('Skip lens', lens)
             continue
         ca_params = get_chromatic_aberration_params(lens, focal_length)
         comps = {
@@ -308,8 +415,7 @@ def main():
             }
         vignette_params = get_vignette_params(lens, aperture, focal_length)
         if vignette_params:
-            comps['vignette'] = VignetteCorrector(
-                mode='power', **vignette_params)
+            comps['vignette'] = VignetteCorrector(**vignette_params)
             linkages[('vignette', 'output')] = linkages[('reader', 'output')]
             linkages[('reader', 'output')] = [('vignette', 'input')]
         if args.gamma:
@@ -318,6 +424,11 @@ def main():
         if args.histogram:
             comps['histogram'] = ShowHistogram()
             linkages[('gamma', 'output')].append(('histogram', 'input'))
+        if args.linear:
+            from pyctools.components.io.imagefilecv import ImageFileWriterCV
+            comps['lin_writer'] = ImageFileWriterCV(path=base + 'l.tiff')
+            comps['lin_writer'].set_config({'16bit': True})
+            linkages[('yuvtorgb', 'output')].append(('lin_writer', 'input'))
         if args.colour != 1.0:
             comps['colour'] = Arithmetic(
                 func='data * pt_float({})'.format(args.colour))
