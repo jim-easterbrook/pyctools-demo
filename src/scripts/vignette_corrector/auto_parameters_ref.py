@@ -11,7 +11,7 @@ from pyctools.core.compound import Compound
 import pyctools.components.arithmetic
 import pyctools.components.colourspace.rgbtoy
 import pyctools.components.io.plotdata
-import pyctools.components.io.rawimagefilereader
+import pyctools.components.io.rawimagefilereader2
 import pyctools.components.photo.vignettecorrector
 
 class Network(object):
@@ -22,18 +22,20 @@ class Network(object):
     'divide': {   'class': 'pyctools.components.arithmetic.Arithmetic2',
                   'config': "{'func': 'pt_float(128) * data1 / data2'}",
                   'pos': (190.0, 430.0)},
-    'input': {   'class': 'pyctools.components.io.rawimagefilereader.RawImageFileReader',
+    'input': {   'class': 'pyctools.components.io.rawimagefilereader2.RawImageFileReader2',
                  'config': "{'path': "
-                           "'/home/jim/Pictures/from_camera/2019/2019_10_22/100D_IMG_5869.CR2', "
-                           "'brightness': 2.0, 'highlight_mode': 'ignore'}",
+                           "'/home/jim/Pictures/from_camera/2019/2019_12_06/100D_IMG_6410.CR2', "
+                           "'demosaic_algorithm': 'LINEAR', 'highlight_mode': "
+                           "'Ignore'}",
                  'pos': (-90.0, 380.0)},
     'plot': {   'class': 'pyctools.components.io.plotdata.PlotData',
                 'config': '{}',
                 'pos': (470.0, 430.0)},
-    'reference': {   'class': 'pyctools.components.io.rawimagefilereader.RawImageFileReader',
+    'reference': {   'class': 'pyctools.components.io.rawimagefilereader2.RawImageFileReader2',
                      'config': "{'path': "
-                               "'/home/jim/Pictures/from_camera/2019/2019_10_22/100D_IMG_5876.CR2', "
-                               "'brightness': 2.0, 'highlight_mode': 'ignore'}",
+                               "'/home/jim/Pictures/from_camera/2019/2019_12_06/100D_IMG_6423.CR2', "
+                               "'demosaic_algorithm': 'LINEAR', "
+                               "'highlight_mode': 'Ignore'}",
                      'pos': (-90.0, 500.0)},
     'rgby_in': {   'class': 'pyctools.components.colourspace.rgbtoy.RGBtoY',
                    'config': "{'matrix': '709'}",

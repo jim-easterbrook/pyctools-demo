@@ -10,7 +10,7 @@ from PyQt5 import QtCore, QtWidgets
 from pyctools.core.compound import Compound
 import pyctools.components.colourspace.rgbtoy
 import pyctools.components.io.plotdata
-import pyctools.components.io.rawimagefilereader
+import pyctools.components.io.rawimagefilereader2
 import pyctools.components.photo.vignettecorrector
 
 class Network(object):
@@ -22,12 +22,13 @@ class Network(object):
               'config': '{}',
               'pos': (320.0, 300.0)},
     'rgby': {   'class': 'pyctools.components.colourspace.rgbtoy.RGBtoY',
-                'config': '{}',
+                'config': "{'matrix': '709'}",
                 'pos': (50.0, 300.0)},
-    'rifr': {   'class': 'pyctools.components.io.rawimagefilereader.RawImageFileReader',
+    'rifr': {   'class': 'pyctools.components.io.rawimagefilereader2.RawImageFileReader2',
                 'config': "{'path': "
                           "'/home/jim/Pictures/from_camera/2019/2019_10_23/100D_IMG_5909.CR2', "
-                          "'brightness': 2.0, 'highlight_mode': 'ignore'}",
+                          "'demosaic_algorithm': 'LINEAR', 'highlight_mode': "
+                          "'Ignore'}",
                 'pos': (-80.0, 300.0)}}
     linkages = \
 {   ('analyse', 'function'): [('pd', 'input')],
