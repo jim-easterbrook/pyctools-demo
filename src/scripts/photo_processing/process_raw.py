@@ -19,6 +19,7 @@ from pyctools.components.colourspace.gammacorrection import GammaCorrect
 from pyctools.components.colourspace.quantise import ErrorFeedbackQuantise
 from pyctools.components.io.imagefilepil import ImageFileWriterPIL
 from pyctools.components.io.rawimagefilereader2 import RawImageFileReader2
+from pyctools.components.photo.reorient import Reorient
 from pyctools.components.photo.unsharpmask import UnsharpMask
 from pyctools.components.photo.vignettecorrector import VignetteCorrector
 
@@ -391,6 +392,7 @@ def main():
                 path=in_file, highlight_mode='Blend',
                 demosaic_algorithm='DCB', dcb_iterations=0, dcb_enhance=False,
                 fbdd_noise_reduction='Off', **ca_params),
+            'reorient': Reorient(orientation='auto'),
             'rgbtoyuv': RGBtoYUV(matrix='709'),
             'sharpen': UnsharpMask(amount=0.3, radius=2.5, threshold=1.0),
             'yuvtorgb': YUVtoRGB(matrix='709'),
@@ -409,7 +411,8 @@ def main():
         if lens == 'Samyang_500':
             comps['sharpen'].set_config({'amount': 0.5})
         linkages = {
-            ('reader',     'output'):    [('rgbtoyuv', 'input')],
+            ('reader',     'output'):    [('reorient', 'input')],
+            ('reorient',   'output'):    [('rgbtoyuv', 'input')],
             ('rgbtoyuv',   'output_Y'):  [('sharpen',  'input')],
             ('rgbtoyuv',   'output_UV'): [('yuvtorgb', 'input_UV')],
             ('sharpen',    'output'):    [('yuvtorgb', 'input_Y')],
