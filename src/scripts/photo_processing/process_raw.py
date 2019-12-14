@@ -3,7 +3,6 @@
 import argparse
 from datetime import datetime
 import logging
-import math
 import os
 import sys
 
@@ -339,6 +338,8 @@ def main():
                         help='multiply colour by x')
     parser.add_argument('-n', '--noise', default=0, type=float, metavar='x',
                         help='set wavelet denoising threshold to x')
+    parser.add_argument('-r', '--reorient', action='store_true',
+                        help='rotate/reflect image data')
     parser.add_argument('-s', '--sharpen', nargs=3, type=float,
                         metavar=('a', 'r', 't'),
                         help='sharpen with amount a, radius r, threshold t')
@@ -392,7 +393,6 @@ def main():
                 path=in_file, highlight_mode='Blend',
                 demosaic_algorithm='DCB', dcb_iterations=0, dcb_enhance=False,
                 fbdd_noise_reduction='Off', **ca_params),
-            'reorient': Reorient(orientation='auto'),
             'rgbtoyuv': RGBtoYUV(matrix='709'),
             'sharpen': UnsharpMask(amount=0.3, radius=2.5, threshold=1.0),
             'yuvtorgb': YUVtoRGB(matrix='709'),
@@ -411,8 +411,7 @@ def main():
         if lens == 'Samyang_500':
             comps['sharpen'].set_config({'amount': 0.5})
         linkages = {
-            ('reader',     'output'):    [('reorient', 'input')],
-            ('reorient',   'output'):    [('rgbtoyuv', 'input')],
+            ('reader',     'output'):    [('rgbtoyuv', 'input')],
             ('rgbtoyuv',   'output_Y'):  [('sharpen',  'input')],
             ('rgbtoyuv',   'output_UV'): [('yuvtorgb', 'input_UV')],
             ('sharpen',    'output'):    [('yuvtorgb', 'input_Y')],
@@ -421,6 +420,10 @@ def main():
             ('quantise',   'output'):    [('writer',   'input'),
                                           ('self',     'output')],
             }
+        if args.reorient:
+            comps['reorient'] = Reorient(orientation='auto')
+            linkages[('reorient', 'output')] = linkages[('reader', 'output')]
+            linkages[('reader', 'output')] = [('reorient', 'input')]
         vignette_params = get_vignette_params(lens, aperture, focal_length)
         if vignette_params:
             comps['vignette'] = VignetteCorrector(**vignette_params)
