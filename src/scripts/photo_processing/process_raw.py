@@ -385,6 +385,7 @@ def main():
         lens = md.get_tag_string('Exif.Photo.LensModel')
         aperture = md.get_fnumber()
         focal_length = md.get_focal_length()
+        iso = md.get_iso_speed()
         if '10-18' in lens:
             lens = 'Canon_10_18'
         elif '18-55' in lens:
@@ -416,6 +417,12 @@ def main():
             'writer': ImageFileWriterPIL(
                 path=out_file, options='"quality":95', set_thumbnail=True),
             }
+        if iso >= 1600:
+            comps['reader'].set_config({
+                'fbdd_noise_reduction': 'Full', 'noise_thr': 200})
+        elif iso >= 3200:
+            comps['reader'].set_config({
+                'fbdd_noise_reduction': 'Full', 'noise_thr': 400})
         if args.astro:
             comps['reader'].set_config({
                 'fbdd_noise_reduction': 'Full', 'noise_thr': 300})
