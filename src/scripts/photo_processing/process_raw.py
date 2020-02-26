@@ -349,6 +349,8 @@ def main():
                         help='offset black level by x')
     parser.add_argument('-c', '--colour', default=1.07, type=float, metavar='x',
                         help='multiply colour by x')
+    parser.add_argument('-f', '--filter_colour', default=0, type=float, metavar='x',
+                        help='set colour smoothing radius to x')
     parser.add_argument('-n', '--noise', default=0, type=float, metavar='x',
                         help='set wavelet denoising threshold to x')
     parser.add_argument('-r', '--reorient', action='store_true',
@@ -417,15 +419,23 @@ def main():
             'writer': ImageFileWriterPIL(
                 path=out_file, options='"quality":95', set_thumbnail=True),
             }
-        if iso >= 1600:
-            comps['reader'].set_config({
-                'fbdd_noise_reduction': 'Full', 'noise_thr': 200})
-        elif iso >= 3200:
+        if iso >= 3200:
             comps['reader'].set_config({
                 'fbdd_noise_reduction': 'Full', 'noise_thr': 400})
+        elif iso >= 1600:
+            comps['reader'].set_config({
+                'fbdd_noise_reduction': 'Full', 'noise_thr': 200})
+        elif iso >= 400:
+            comps['reader'].set_config({
+                'fbdd_noise_reduction': 'Full', 'noise_thr': 100})
         if args.astro:
             comps['reader'].set_config({
-                'fbdd_noise_reduction': 'Full', 'noise_thr': 300})
+                'fbdd_noise_reduction': 'Full',
+                'noise_thr': 300,
+                # force daylight white balance
+                'use_camera_wb': False,
+                'user_wb': '2123,1024,1531,1024',
+                })
         if args.noise:
             comps['reader'].set_config({'noise_thr': args.noise})
         if lens == 'Samyang_500':
@@ -465,6 +475,11 @@ def main():
                 func='data * pt_float({})'.format(args.colour))
             linkages[('colour', 'output')] = linkages[('rgbtoyuv', 'output_UV')]
             linkages[('rgbtoyuv', 'output_UV')] = [('colour', 'input')]
+        if args.filter_colour > 0:
+            comps['filter'] = UnsharpMask(
+                amount=-1, radius=args.filter_colour, denoise=False)
+            linkages[('filter', 'output')] = linkages[('rgbtoyuv', 'output_UV')]
+            linkages[('rgbtoyuv', 'output_UV')] = [('filter', 'input')]
         if args.sharpen:
             a, r, t = args.sharpen
             comps['sharpen2'] = UnsharpMask(
