@@ -6,9 +6,7 @@ import logging
 import os
 import sys
 
-import gi
-gi.require_version('GExiv2', '0.10')
-from gi.repository import GExiv2
+import exiv2
 
 from pyctools.core.compound import Compound
 from pyctools.components.arithmetic import Arithmetic
@@ -382,12 +380,13 @@ def main():
         if os.path.exists(out_file):
             print('Skip existing', os.path.basename(out_file))
             continue
-        md = GExiv2.Metadata()
-        md.open_path(in_file)
-        lens = md.get_tag_string('Exif.Photo.LensModel')
-        aperture = md.get_fnumber()
-        focal_length = md.get_focal_length()
-        iso = md.get_iso_speed()
+        md = exiv2.ImageFactory.open(in_file)
+        md.readMetadata()
+        md = md.exifData()
+        lens = md['Exif.Photo.LensModel'].toString()
+        aperture = exiv2.fNumber(md).toFloat()
+        focal_length = exiv2.focalLength(md).toFloat()
+        iso = exiv2.isoSpeed(md).toFloat()
         if '10-18' in lens:
             lens = 'Canon_10_18'
         elif '18-55' in lens:
@@ -436,6 +435,7 @@ def main():
                 'use_camera_wb': False,
                 'user_wb': '2123,1024,1531,1024',
                 })
+            comps['sharpen'].set_config({'amount': 0.9})
         if args.noise:
             comps['reader'].set_config({'noise_thr': args.noise})
         if lens == 'Samyang_500':
@@ -499,8 +499,10 @@ def main():
         graph.join()
         if os.path.exists(out_file):
             # set modified timestamp
-            md = GExiv2.Metadata()
-            md.open_path(out_file)
+            im = exiv2.ImageFactory.open(out_file)
+            im.readMetadata()
+            exif_data = im.exifData()
+            xmp_data = im.xmpData()
             now = datetime.now()
             tz_offset = (now - datetime.utcnow()).total_seconds() / 60
             tz_offset = int(round(tz_offset / 15, 0) * 15)
@@ -509,14 +511,13 @@ def main():
                 tz_offset = -tz_offset
             else:
                 sign = '+'
-            md.set_tag_string(
-                'Exif.Image.DateTime', now.strftime('%Y:%m:%d %H:%M:%S'))
-            md.clear_tag('Exif.Photo.SubSecTime')
-            md.set_tag_string(
-                'Xmp.xmp.ModifyDate', now.strftime('%Y-%m-%dT%H:%M:%S') +
+            exif_data['Exif.Image.DateTime'] = now.strftime('%Y:%m:%d %H:%M:%S')
+            del exif_data['Exif.Photo.SubSecTime']
+            xmp_data['Xmp.xmp.ModifyDate'] = (
+                now.strftime('%Y-%m-%dT%H:%M:%S') +
                 sign + '{:02d}:{:02d}'.format(tz_offset // 60, tz_offset % 60))
             # set audit trail
-            audit = md.get_tag_string('Xmp.pyctools.audit')
+            audit = xmp_data['Xmp.pyctools.audit'].value().toString()
             audit += '{} = process_raw({})\n'.format(
                 os.path.basename(out_file), os.path.basename(in_file))
             params = []
@@ -525,8 +526,8 @@ def main():
                     params.append('{}: {}'.format(key, value))
             if params:
                 audit += '    ' + ', '.join(params) + '\n'
-            md.set_tag_string('Xmp.pyctools.audit', audit)
-            md.save_file(out_file)
+            xmp_data['Xmp.pyctools.audit'] = audit
+            im.writeMetadata()
             if args.audit:
                 print(audit)
 
