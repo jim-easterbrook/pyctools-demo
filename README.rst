@@ -18,8 +18,7 @@ You should clone the GitHub repository, or download and extract a zip or tar.gz 
 
   git clone https://github.com/jim-easterbrook/pyctools-demo.git
   cd pyctools-demo
-  python setup.py build
-  sudo python setup.py install
+  pip3 install --user .
 
 Use
 ---
@@ -33,7 +32,7 @@ Licence
 
 | Pyctools-demo - examples of things you can do with pyctools.
 | http://github.com/jim-easterbrook/pyctools-demo
-| Copyright (C) 2015  Jim Easterbrook  jim@jim-easterbrook.me.uk
+| Copyright (C) 2015-22  Jim Easterbrook  jim@jim-easterbrook.me.uk
 
 This program is free software: you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
